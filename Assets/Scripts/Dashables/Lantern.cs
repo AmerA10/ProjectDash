@@ -8,7 +8,7 @@ public abstract class Lantern : MonoBehaviour
     
     // Start is called before the first frame update
     bool isActivated;
-    public Action OnLanternActivation;
+
     private void Awake()
     {
         Reset();
@@ -21,7 +21,7 @@ public abstract class Lantern : MonoBehaviour
 
     public virtual void Activate()
     {
-        OnLanternActivation();
+
         //isActivated = true;
     }
     public abstract void LanternEffect(Transform player);

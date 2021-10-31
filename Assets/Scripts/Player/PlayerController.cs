@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimation playerAnimation;
 
 
-        
- 
-
     public Action OnDeath;
 
     [Header("Moving Left and Right")]
@@ -107,32 +104,16 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = 1f;
         playerAnimation.EndDashAnim();
     }
-
-    private Vector2 GetDashDirection(Transform target)
-    {
-        Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
-        GetAngle(target, dashDirection);
-        return dashDirection;
-    }
-
-    private void GetAngle(Transform target, Vector2 dir)
-    {
-
-        Debug.Log("Direction is" + dir);
-        Debug.DrawLine(this.transform.position, ((Vector2)this.transform.position + dir * 5f), Color.yellow);
- 
-    }
-  
     public void HandleMovementInput(float horizontalFloat)
     {
-        if(isGrounded && playerState != State.DASHING)
+        if (isGrounded && playerState != State.DASHING)
         {
             // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
             rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
             ChangeState(State.MOVING);
         }
-        
-        else if(playerState == State.FALLING)
+
+        else if (playerState == State.FALLING)
         {
             //The only logical next step is write custom falling physics via customizing the gravity force
 
@@ -149,7 +130,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
             }
-            else if(rb.velocity.y > 0)
+            else if (rb.velocity.y > 0)
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.fixedDeltaTime;
             }
@@ -160,6 +141,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private Vector2 GetDashDirection(Transform target)
+    {
+        Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
+        GetAngle(target, dashDirection);
+        return dashDirection;
+    }
+
+    private void GetAngle(Transform target, Vector2 dir)
+    {
+
+        Debug.Log("Direction is" + dir);
+        Debug.DrawLine(this.transform.position, ((Vector2)this.transform.position + dir * 5f), Color.yellow);
+ 
+    }
+
+    
     private void CheckForGround()
     {
         isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
@@ -200,8 +197,6 @@ public class PlayerController : MonoBehaviour
         }
         return closest;
     }
-
-
     private void ChangeState(State state)
     {
         if (playerState == state) return;
@@ -220,7 +215,6 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;

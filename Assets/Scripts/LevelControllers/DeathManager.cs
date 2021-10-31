@@ -18,9 +18,4 @@ public class DeathManager : MonoBehaviour
         player.transform.position = spawnLocation.position;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

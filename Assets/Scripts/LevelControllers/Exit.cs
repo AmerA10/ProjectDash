@@ -11,17 +11,12 @@ public class Exit : MonoBehaviour
 
     private void Awake()
     {
-        GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<BoxCollider2D>().enabled = true;
        
     }
     private void Start()
     {
-     FindObjectOfType<LanternManager>().OnDoorOpen += OpenDoor;
 
-    }
-    private void OpenDoor()
-    {
-        GetComponent<BoxCollider2D>().enabled = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
