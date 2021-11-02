@@ -21,8 +21,9 @@ public class PlayerAnimation : MonoBehaviour
     public void DashAnim (Vector2 dashDir)
     {
         this.anim.SetTrigger("Dash");
+        float angle = Mathf.Atan2(dashDir.y, dashDir.x) * Mathf.Rad2Deg;
+        graphics.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        graphics.rotation = Quaternion.LookRotation(Vector3.forward, dashDir) *  Quaternion.Euler(0,0, 90) ;
     }
     public void EndDashAnim()
     {

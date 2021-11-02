@@ -35,7 +35,7 @@ public class PlayerInput : MonoBehaviour
         if(dashInput)
         {
 
-            playerController.Dash();
+            playerController.AttemptJumpOrDash();
         }
     }
 

@@ -4,14 +4,16 @@ using UnityEngine;
 using System;
 public enum State
 {
-    MOVING, DASHING, FALLING, DEAD
+    MOVING, DASHING, FALLING, DEAD, WAITING, JUMPING
 }
+
+
 public class PlayerController : MonoBehaviour
 {
     // Start is called before the first frame update
     [Header("Components")]
     private Rigidbody2D rb;
-    private State playerState;
+    [SerializeField] private State playerState;
     private PlayerAnimation playerAnimation;
 
 
@@ -38,6 +40,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashSpeed = 20f;
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private float dashStopTime = 0.2f;
+    [SerializeField] private ChainTest hook;
+
+    [Header("Dash Stuff")]
+    [SerializeField] private float jumpForce = 10f;
+
 
     private Vector2 dashDirection;
 
@@ -51,15 +58,16 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         ChangeState(State.MOVING);
-
+        hook.OnHookHit += Dash;
+        GrabHook();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //DashBehaviour();
         CheckForGround();
         
+        if(playerState != State.WAITING)
         target = CheckForDashTarget();
 
         if (target != null && playerState != State.DASHING)
@@ -68,14 +76,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void AttemptJumpOrDash()
+    {
+        if (target == null && !isGrounded) return;
+
+        if(target == null && isGrounded)
+        {
+            Jump();
+        }
+        else 
+        {
+            WaitTillHook();
+        }
+    }
+
+    public void Jump()
+    {
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+    }
+
+    public void WaitTillHook()
+    {
+
+        rb.gravityScale = 0f;
+
+        hook.ShootHookTo(target);
+        rb.velocity = Vector2.zero;
+        hook.canHit = true;
+
+        ChangeState(State.WAITING);
+
+    }
+
     public void Dash()
     {
-        if (target == null) return;
-        if (target.GetComponent<Lantern>().IsActivated()) return;
-        target.GetComponent<Lantern>().Activate();
-        ChangeState(State.DASHING);
+
 
         target.GetComponent<Lantern>().SetUp(this.transform);
+        ChangeState(State.DASHING);
+
 
         rb.gravityScale = 0f;
         rb.drag = 8f;
@@ -87,6 +126,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator StartDashing()
     {
+
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
      
@@ -102,10 +142,19 @@ public class PlayerController : MonoBehaviour
         ChangeState(State.FALLING);
         rb.drag = 1f;
         rb.gravityScale = 1f;
+        GrabHook();
         playerAnimation.EndDashAnim();
+    }
+
+    private void GrabHook()
+    {
+        hook.transform.parent = this.transform;
+        hook.transform.position = this.transform.position;
+        hook.canHit = false;
     }
     public void HandleMovementInput(float horizontalFloat)
     {
+        if (playerState == State.WAITING) return;
         if (isGrounded && playerState != State.DASHING)
         {
             // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
@@ -115,12 +164,15 @@ public class PlayerController : MonoBehaviour
 
         else if (playerState == State.FALLING)
         {
-            //The only logical next step is write custom falling physics via customizing the gravity force
+            //Player is falling without moving
 
             if (horizontalFloat != 0)
             {
                 rb.velocity = new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y);
             }
+
+            //Player is falling while moving
+
             else
             {
                 rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y), airLerp * Time.deltaTime);
@@ -144,14 +196,13 @@ public class PlayerController : MonoBehaviour
     private Vector2 GetDashDirection(Transform target)
     {
         Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
-        GetAngle(target, dashDirection);
+        DrawnAngle(target, dashDirection);
         return dashDirection;
     }
 
-    private void GetAngle(Transform target, Vector2 dir)
+    private void DrawnAngle(Transform target, Vector2 dir)
     {
 
-        Debug.Log("Direction is" + dir);
         Debug.DrawLine(this.transform.position, ((Vector2)this.transform.position + dir * 5f), Color.yellow);
  
     }
@@ -160,7 +211,7 @@ public class PlayerController : MonoBehaviour
     private void CheckForGround()
     {
         isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
-        if(!isGrounded && playerState != State.DASHING)
+        if(!isGrounded && playerState != State.DASHING && playerState != State.WAITING)
         {
             if (playerState == State.FALLING) return;
             
