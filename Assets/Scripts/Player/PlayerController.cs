@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         ChangeState(State.FALLING);
         rb.drag = 1f;
         rb.gravityScale = 1f;
-        GrabHook();
+
         playerAnimation.EndDashAnim();
     }
 
@@ -259,10 +259,14 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Collided with: " + collision.name);
             dashStrat.TryDash(this.transform, dashDirection);
+            GrabHook();
+
         }
         if(collision.tag.Equals("DeathZone"))
         {
+            GrabHook();
             Die();
+        
         }
     }
 
