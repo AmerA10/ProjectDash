@@ -40,13 +40,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashSpeed = 20f;
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private float dashStopTime = 0.2f;
-    [SerializeField] private ChainTest hook;
+    [SerializeField] private Chain hook;
+    [SerializeField] private Dashable dashStrat;
 
-    [Header("Dash Stuff")]
+
+    [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
 
 
     private Vector2 dashDirection;
+
+
 
     public void Die()
     {
@@ -69,9 +73,11 @@ public class PlayerController : MonoBehaviour
         
         if(playerState != State.WAITING)
         target = CheckForDashTarget();
+        
 
         if (target != null && playerState != State.DASHING)
         {
+            dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
         }
     }
@@ -110,11 +116,7 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
-
-
-        target.GetComponent<Lantern>().SetUp(this.transform);
         ChangeState(State.DASHING);
-
 
         rb.gravityScale = 0f;
         rb.drag = 8f;
@@ -129,8 +131,8 @@ public class PlayerController : MonoBehaviour
 
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
-     
-        rb.velocity += dashDirection * dashSpeed;
+        dashStrat.TryDefaultDash(this.transform, dashDirection);
+
         playerAnimation.DashAnim(rb.velocity);
         StartCoroutine(FinishDashing());
     }
@@ -151,7 +153,10 @@ public class PlayerController : MonoBehaviour
         hook.transform.parent = this.transform;
         hook.transform.position = this.transform.position;
         hook.canHit = false;
+        hook.SetTrailActive(false);
     }
+
+    //Move this out of the class. Or move dashing out of the class.
     public void HandleMovementInput(float horizontalFloat)
     {
         if (playerState == State.WAITING) return;
@@ -198,13 +203,6 @@ public class PlayerController : MonoBehaviour
         Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
         DrawnAngle(target, dashDirection);
         return dashDirection;
-    }
-
-    private void DrawnAngle(Transform target, Vector2 dir)
-    {
-
-        Debug.DrawLine(this.transform.position, ((Vector2)this.transform.position + dir * 5f), Color.yellow);
- 
     }
 
     
@@ -255,17 +253,27 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.GetComponent<Lantern>() && playerState == State.DASHING && target == collision.GetComponent<Transform>())
+        if(collision.GetComponent<Dashable>() && playerState == State.DASHING && target == collision.GetComponent<Transform>())
         {
-            collision.GetComponent<Lantern>().LanternEffect(this.transform);
+            Debug.Log("Collided with: " + collision.name);
+            dashStrat.TryDash(this.transform, dashDirection);
         }
         if(collision.tag.Equals("DeathZone"))
         {
             Die();
         }
     }
+
+
+    private void DrawnAngle(Transform target, Vector2 dir)
+    {
+
+        Debug.DrawLine(this.transform.position, ((Vector2)this.transform.position + dir * 5f), Color.yellow);
+
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class ChainTest : MonoBehaviour
+public class Chain : MonoBehaviour
 {
 
     [SerializeField] private float delta;
@@ -13,18 +13,20 @@ public class ChainTest : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float hookShotRadius = 1f;
     [SerializeField] LayerMask whatIsDashable;
-
+    [SerializeField] private ChainTrail trail;
     public Action OnHookHit;
 
     // Start is called before the first frame update
     void Start()
     {
         isHit = false;
+        SetTrailActive(false);
     }
 
 
     public void ShootHookTo(Transform target)
     {
+        SetTrailActive(true);
         this.transform.parent = null;
         Vector2 directionToTarget = target.position - this.transform.position;
         float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
@@ -51,9 +53,14 @@ public class ChainTest : MonoBehaviour
             yield return null;
 
         }
-        Debug.Log("reached the end");
 
-
+    }
+    public void SetTrailActive(bool isActive)
+    {
+        if (isActive)
+            trail.StartComputing();
+        else trail.StopComputing();
+  
     }
     private void OnDrawGizmos()
     {
