@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public enum State
-{
-    MOVING, DASHING, FALLING, DEAD, WAITING, JUMPING
-}
+using DashEnums;
+
 
 
 public class PlayerController : MonoBehaviour
@@ -15,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     [SerializeField] private State playerState;
     private PlayerAnimation playerAnimation;
+    private PlayerInput playerInput;
 
 
     public Action OnDeath;
@@ -61,7 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
-        ChangeState(State.MOVING);
+        ChangeState(State.STANDING);
         hook.OnHookHit += Dash;
         GrabHook();
     }
@@ -70,10 +69,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         CheckForGround();
-        
-        if(playerState != State.WAITING)
-        target = CheckForDashTarget();
-        
+
+        if (playerState != State.WAITING) target = CheckForDashTarget();
+        AdjustPlayerState();
 
         if (target != null && playerState != State.DASHING)
         {
@@ -82,15 +80,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void AdjustPlayerState()
+    {
+        if (isGrounded)
+        {
+            if (playerInput.GetPlayerInputDirection() != 0f) playerState = State.MOVING;
+            else playerState = State.STANDING;
+        }
+        // add TODO else to handle jumping vs. falling
+        // convert moving to WALK_LEFT, WALK RIGHT
+        // when chaging from WALK to STANDING, instead go to IDLE in the same direction as they were walking.
+    }
+
     public void AttemptJumpOrDash()
     {
         if (target == null && !isGrounded) return;
 
-        if(target == null && isGrounded)
+        if (target == null && isGrounded)
         {
             Jump();
         }
-        else 
+        else
         {
             WaitTillHook();
         }
@@ -140,7 +150,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator FinishDashing()
     {
         yield return new WaitForSeconds(dashTime);
-    
+
         ChangeState(State.FALLING);
         rb.drag = 1f;
         rb.gravityScale = 1f;
@@ -198,6 +208,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool GetIsGrounded() { return isGrounded; }
+    public State GetPlayerState() { return playerState; }
+
     private Vector2 GetDashDirection(Transform target)
     {
         Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
@@ -205,14 +218,14 @@ public class PlayerController : MonoBehaviour
         return dashDirection;
     }
 
-    
+
     private void CheckForGround()
     {
         isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
-        if(!isGrounded && playerState != State.DASHING && playerState != State.WAITING)
+        if (!isGrounded && playerState != State.DASHING && playerState != State.WAITING)
         {
             if (playerState == State.FALLING) return;
-            
+
             ChangeState(State.FALLING);
         }
     }
@@ -231,15 +244,15 @@ public class PlayerController : MonoBehaviour
             return FindClosestTarget(colliders);
         }
 
-        return null;   
+        return null;
     }
 
     private Transform FindClosestTarget(RaycastHit2D[] targets)
     {
         Transform closest = targets[0].transform;
-        foreach(RaycastHit2D hit in targets)
+        foreach (RaycastHit2D hit in targets)
         {
-            if((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
+            if ((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
             {
                 closest = hit.transform;
             }
@@ -255,18 +268,18 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.GetComponent<Dashable>() && playerState == State.DASHING && target == collision.GetComponent<Transform>())
+        if (collision.GetComponent<Dashable>() && playerState == State.DASHING && target == collision.GetComponent<Transform>())
         {
             Debug.Log("Collided with: " + collision.name);
             dashStrat.TryDash(this.transform, dashDirection);
             GrabHook();
 
         }
-        if(collision.tag.Equals("DeathZone"))
+        if (collision.tag.Equals("DeathZone"))
         {
             GrabHook();
             Die();
-        
+
         }
     }
 
@@ -286,7 +299,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(this.transform.position, dashRadius);
         Gizmos.color = Color.green;
         Gizmos.color = Color.yellow;
-      
-        
+
+
     }
 }

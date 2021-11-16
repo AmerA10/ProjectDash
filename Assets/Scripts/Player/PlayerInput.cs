@@ -10,12 +10,10 @@ public class PlayerInput : MonoBehaviour
     private PlayerController playerController;
   
     private bool dashInput;
-    private bool isGrounded;
 
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
-
     }
     // Start is called before the first frame update
     void Start()
@@ -43,4 +41,6 @@ public class PlayerInput : MonoBehaviour
     {
         playerController.HandleMovementInput(horizontalInput);
     }
+
+    public float GetPlayerInputDirection() { return horizontalInput; }
 }
