@@ -57,8 +57,7 @@ public class Chain : MonoBehaviour
     }
     public void SetTrailActive(bool isActive)
     {
-        if (isActive)
-            trail.StartComputing();
+        if (isActive) trail.StartComputing();
         else trail.StopComputing();
   
     }

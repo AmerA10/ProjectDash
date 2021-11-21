@@ -9,8 +9,6 @@ public class PlayerAnimation : MonoBehaviour
 
     [SerializeField] private Animator anim;
     [SerializeField] private Transform graphics;
-    private PlayerController playerController;
-    private PlayerInput playerInput;
 
     // Player animations
     const string WALK_LEFT = "pLWalk";
@@ -21,30 +19,6 @@ public class PlayerAnimation : MonoBehaviour
     const string SHOOT_RIGHT = "pRShoot";
     const string JUMP = "pJump";
     const string FALL = "pFall";
-
-    private void Awake()
-    {
-        playerController = GetComponent<PlayerController>();
-        playerInput = GetComponent<PlayerInput>();
-    }
-
-    private void Update()
-    {
-        ReconsileAnimationWithInput();
-    }
-
-    /*
-     * [Private] Reconsile Animation With Input
-     * 
-     * For animations that have a left and right direction
-     * Determine if the appropriate animation is playing given the players current direction
-     * If incorrect, switch animation direction
-     */
-    private void ReconsileAnimationWithInput()
-    {
-        State pState = playerController.GetPlayerState();
-        SetPlayerAnimation(pState);
-    }
 
 
     /* [Public] HANDLE PLAYER ANIMATIONS

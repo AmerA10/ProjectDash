@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     private Vector2 dashDirection;
 
 
-
     public void Die()
     {
         OnDeath();
@@ -60,7 +59,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
-        ChangeState(State.STANDING);
+        playerInput = GetComponent<PlayerInput>();
+        ChangeState(State.IDLE_RIGHT);
         hook.OnHookHit += Dash;
         GrabHook();
     }
@@ -70,10 +70,10 @@ public class PlayerController : MonoBehaviour
     {
         CheckForGround();
 
-        if (playerState != State.WAITING) target = CheckForDashTarget();
+        if (playerState != State.SHOOT_RIGHT && playerState != State.SHOOT_LEFT) target = CheckForDashTarget();
         AdjustPlayerState();
 
-        if (target != null && playerState != State.DASHING)
+        if (target != null && playerState != State.SHOOT_RIGHT && playerState != State.SHOOT_LEFT)
         {
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
@@ -84,12 +84,16 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            if (playerInput.GetPlayerInputDirection() != 0f) playerState = State.MOVING;
-            else playerState = State.STANDING;
+            float inputDir = playerInput.GetPlayerInputDirection();
+            if (inputDir > 0 && playerState != State.WALK_RIGHT) ChangeState(State.WALK_RIGHT);
+            else if(inputDir < 0 && playerState != State.WALK_LEFT) ChangeState(State.WALK_LEFT);
+            else if (inputDir == 0 )
+            {
+                if (playerState == State.WALK_RIGHT) { ChangeState(State.IDLE_RIGHT); }
+                else if (playerState == State.WALK_LEFT) { ChangeState(State.IDLE_LEFT); }
+                else if (playerState == State.FALLING) { ChangeState(State.IDLE_RIGHT); }
+            }   
         }
-        // add TODO else to handle jumping vs. falling
-        // convert moving to WALK_LEFT, WALK RIGHT
-        // when chaging from WALK to STANDING, instead go to IDLE in the same direction as they were walking.
     }
 
     public void AttemptJumpOrDash()
@@ -109,25 +113,23 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        ChangeState(State.JUMPING);
     }
 
     public void WaitTillHook()
     {
+        if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) { ChangeState(State.SHOOT_RIGHT); }
+        else if (playerState != State.SHOOT_LEFT) { ChangeState(State.SHOOT_LEFT); }
 
         rb.gravityScale = 0f;
 
         hook.ShootHookTo(target);
         rb.velocity = Vector2.zero;
         hook.canHit = true;
-
-        ChangeState(State.WAITING);
-
     }
 
     public void Dash()
     {
-        ChangeState(State.DASHING);
-
         rb.gravityScale = 0f;
         rb.drag = 8f;
 
@@ -169,12 +171,11 @@ public class PlayerController : MonoBehaviour
     //Move this out of the class. Or move dashing out of the class.
     public void HandleMovementInput(float horizontalFloat)
     {
-        if (playerState == State.WAITING) return;
-        if (isGrounded && playerState != State.DASHING)
+        if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
+        if (isGrounded)
         {
             // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
             rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
-            ChangeState(State.MOVING);
         }
 
         else if (playerState == State.FALLING)
@@ -222,11 +223,18 @@ public class PlayerController : MonoBehaviour
     private void CheckForGround()
     {
         isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
-        if (!isGrounded && playerState != State.DASHING && playerState != State.WAITING)
+        if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
             if (playerState == State.FALLING) return;
+            if (playerState == State.JUMPING) return;
 
             ChangeState(State.FALLING);
+        } else if (isGrounded)
+        {
+            if (playerState == State.FALLING || playerState == State.JUMPING)
+            {
+                ChangeState(State.IDLE_RIGHT);
+            }
         }
     }
 
@@ -263,13 +271,15 @@ public class PlayerController : MonoBehaviour
     {
         if (playerState == state) return;
         playerState = state;
+        playerAnimation.SetPlayerAnimation(state);
 
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Dashable>() && playerState == State.DASHING && target == collision.GetComponent<Transform>())
+        if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
+            if(playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT)
             Debug.Log("Collided with: " + collision.name);
             dashStrat.TryDash(this.transform, dashDirection);
             GrabHook();
@@ -299,7 +309,5 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(this.transform.position, dashRadius);
         Gizmos.color = Color.green;
         Gizmos.color = Color.yellow;
-
-
     }
 }
