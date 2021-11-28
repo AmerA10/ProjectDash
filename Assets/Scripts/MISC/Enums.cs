@@ -16,4 +16,12 @@ namespace DashEnums
         SHOOT_LEFT,
         SHOOT_RIGHT,
     }
+    public enum CameraEffect
+    {
+        NONE,
+        PRE_DASH,
+        DASH, 
+        DEATH, 
+        TRANSITION, 
+    }
 }

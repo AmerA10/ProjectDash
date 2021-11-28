@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DashEnums;
 
 public class Chain : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class Chain : MonoBehaviour
         this.target = target;
         isHit = false;
         StartCoroutine(MoveToTarget());
+        EventManager.Instance.TriggerCameraEffect(CameraEffect.DASH);
 
     }
     IEnumerator MoveToTarget()

@@ -86,13 +86,13 @@ public class PlayerController : MonoBehaviour
         {
             float inputDir = playerInput.GetPlayerInputDirection();
             if (inputDir > 0 && playerState != State.WALK_RIGHT) ChangeState(State.WALK_RIGHT);
-            else if(inputDir < 0 && playerState != State.WALK_LEFT) ChangeState(State.WALK_LEFT);
-            else if (inputDir == 0 )
+            else if (inputDir < 0 && playerState != State.WALK_LEFT) ChangeState(State.WALK_LEFT);
+            else if (inputDir == 0)
             {
                 if (playerState == State.WALK_RIGHT) { ChangeState(State.IDLE_RIGHT); }
                 else if (playerState == State.WALK_LEFT) { ChangeState(State.IDLE_LEFT); }
                 else if (playerState == State.FALLING) { ChangeState(State.IDLE_RIGHT); }
-            }   
+            }
         }
     }
 
@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
             WaitTillHook();
         }
     }
@@ -229,7 +230,8 @@ public class PlayerController : MonoBehaviour
             if (playerState == State.JUMPING) return;
 
             ChangeState(State.FALLING);
-        } else if (isGrounded)
+        }
+        else if (isGrounded)
         {
             if (playerState == State.FALLING || playerState == State.JUMPING)
             {
@@ -279,8 +281,8 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
-            if(playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT)
-            Debug.Log("Collided with: " + collision.name);
+            if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT)
+                Debug.Log("Collided with: " + collision.name);
             dashStrat.TryDash(this.transform, dashDirection);
             GrabHook();
 
