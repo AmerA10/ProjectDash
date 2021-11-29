@@ -106,7 +106,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
             WaitTillHook();
         }
     }
