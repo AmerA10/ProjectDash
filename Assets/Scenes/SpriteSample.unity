@@ -7087,8 +7087,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212820, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: dialogue
-      value: This is some test dialogue.|It's broken into three parts. Some are a
-        little long.|Did it work?
+      value: Hey!|This text box can be  dynamic or static size!|It waits for input...|animated
+        text and bouncing can be toggled on or off.
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212820, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: textPadding
@@ -7096,7 +7096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212820, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: maxCharsWide
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212820, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: textRowHeight
@@ -7112,11 +7112,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212821, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.14
+      value: 10.07
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212821, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.94
+      value: 11.13
       objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212821, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: m_LocalPosition.z
