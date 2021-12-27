@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2478320034166984555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2994555430067464773}
@@ -324,16 +324,17 @@ MonoBehaviour:
   autoHide: 1
   moreText: {fileID: 7673333428723989125}
   moreTextSprite: {fileID: 664286515130511393}
-  dialogue: This is some test dialogue.|It's broken into three parts.|Did it work?
+  dialogue: Hey!|This text box can be  dynamic or static size!|It waits for input...|animated
+    text and bouncing can be toggled on or off.
   delay: 0.05
-  maxCharsWide: 15
+  maxCharsWide: 20
   textPaddingTop: 2.5
   textPaddingSide: 1.5
   textCharacterWidth: 0.425
   textRowHeight: 0.6
   moreTextX: 22.22
-  triggerPosition: {x: 0, y: 0}
-  triggerSize: {x: 0, y: 0}
+  triggerPosition: {x: -4.75, y: -3.6}
+  triggerSize: {x: 2.05, y: 2.16}
 --- !u!61 &573652167489866065
 BoxCollider2D:
   m_ObjectHideFlags: 0
