@@ -94,6 +94,11 @@ public class PlayerController : MonoBehaviour
                 else if (playerState == State.FALLING) { ChangeState(State.IDLE_RIGHT); }
             }
         }
+        else
+        {
+            if (rb.velocity.y > 0 && playerState != State.JUMPING) ChangeState(State.JUMPING);
+            else if (rb.velocity.y < 0 && playerState != State.FALLING) ChangeState(State.FALLING);
+        }
     }
 
     public void AttemptJumpOrDash()
@@ -153,10 +158,11 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(dashTime);
 
-        ChangeState(State.FALLING);
+        if (rb.velocity.y > 0f) ChangeState(State.JUMPING);
+        else ChangeState(State.FALLING);
+
         rb.drag = 1f;
         rb.gravityScale = 1f;
-
         playerAnimation.EndDashAnim();
     }
 
