@@ -7081,6 +7081,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2324694094399331581, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 5545788767955212818, guid: b8e20e817f87d8144ad6e1ee2743dec3, type: 3}
       propertyPath: m_Name
       value: DialogueBox

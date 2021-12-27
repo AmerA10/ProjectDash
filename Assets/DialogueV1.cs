@@ -19,6 +19,14 @@ public class DialogueV1 : MonoBehaviour
     bool bounce;
     [SerializeField]
     bool fixedSize;
+    [SerializeField]
+    bool autoHide = true;
+
+    [SerializeField]
+    GameObject moreText;
+    [SerializeField]
+    SpriteRenderer moreTextSprite;
+    BoxCollider2D colider;
 
     public string dialogue;
     public float delay = 0.01f;
@@ -27,6 +35,9 @@ public class DialogueV1 : MonoBehaviour
     public float textPaddingSide = 0f;
     public float textCharacterWidth = 0.25f;
     public float textRowHeight = 0.3f;
+    public float moreTextX;
+    public Vector2 triggerPosition;
+    public Vector2 triggerSize;
 
 
     float timer = 0f;
@@ -36,6 +47,7 @@ public class DialogueV1 : MonoBehaviour
     bool _animateText;
     bool _bounce;
     bool _fixedSize;
+    bool _visible;
 
     private void Awake()
     {
@@ -43,12 +55,16 @@ public class DialogueV1 : MonoBehaviour
         _fixedSize = fixedSize;
         _animateText = animateText;
         GetComponentInChildren<Animator>().enabled = _bounce;
-
         ParseDialogue();
         textbox = GetComponentInChildren<TextMeshPro>();
         sprite = GetComponentInChildren<SpriteRenderer>();
+        colider = GetComponent<BoxCollider2D>();
+        colider.size = triggerSize;
+        colider.offset = triggerPosition;
+        ToggleVisibility();
         InitializeText();
         UpdateSprite();
+
     }
 
     private void Update()
@@ -92,8 +108,16 @@ public class DialogueV1 : MonoBehaviour
     void InitializeText()
     {
         if (textbox == null) return;
-        if (_textList.Count == 0) return;
-        if (_textList.Count > 1 && !_animateText) waitForInput = true;
+        if (_textList.Count == 0)
+        {
+            moreTextSprite.enabled = false;
+            return;
+        }
+        if (_textList.Count > 1 && !_animateText)
+        {
+            waitForInput = true;
+            moreTextSprite.enabled = true;
+        }
         string nextText = _textList[0];
         _textList.RemoveAt(0);
         _text = nextText;
@@ -133,9 +157,12 @@ public class DialogueV1 : MonoBehaviour
         waitForInput = true;
 
     }
-
+    // TODO - trying to position the chevron to always be at the end of the text. 
+    // Im too high. It should be easy. Get the percentage away from center it is before resizing and 
+    // tehn use that percentage to find center after resizing.
     void UpdateSprite()
     {
+        if (!_visible) return;
         if (sprite == null || _fixedSize) return;
         int textLength = textbox.text.Length;
         float textWidth, textHeight;
@@ -164,9 +191,13 @@ public class DialogueV1 : MonoBehaviour
         float spriteHeight = textHeight + textPaddingTop;
         Vector2 newSpriteSize = new Vector2(spriteWidth, spriteHeight);
         Vector2 newTextSize = new Vector2(textWidth, textHeight);
+
+        // Update the moreText chevron
+        if (_textList.Count == 0) moreTextSprite.enabled = false;
+        else moreText.transform.localPosition = new Vector3(newTextSize.x * 0.5f, newTextSize.y * -0.5f, -2.0f);
+
         textbox.rectTransform.sizeDelta = newTextSize;
         sprite.size = newSpriteSize;
-
     }
 
     public void ToggleBounce()
@@ -192,5 +223,32 @@ public class DialogueV1 : MonoBehaviour
     public void ToggleFixedSize(bool update)
     {
         fixedSize = update;
+    }
+
+    private void ToggleVisibility()
+    {
+        bool toggle = !sprite.enabled;
+        sprite.enabled = toggle;
+        moreTextSprite.enabled = toggle;
+        textbox.enabled = toggle;
+        _visible = toggle;
+    }
+    private void ToggleVisibility(bool visible)
+    {
+        sprite.enabled = visible;
+        moreTextSprite.enabled = visible;
+        textbox.enabled = visible;
+        _visible = visible;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.tag.Equals("Player") || !autoHide) return;
+        ToggleVisibility();
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!collision.tag.Equals("Player") || !autoHide) return;
+        ToggleVisibility();
     }
 }
