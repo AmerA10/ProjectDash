@@ -65,7 +65,6 @@ public class PlayerController : MonoBehaviour
         GrabHook();
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckForGround();
@@ -91,10 +90,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerState == State.WALK_RIGHT) { ChangeState(State.IDLE_RIGHT); }
                 else if (playerState == State.WALK_LEFT) { ChangeState(State.IDLE_LEFT); }
-                else if (playerState == State.FALLING) { ChangeState(State.IDLE_RIGHT); }
+                else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
             }
         }
-        else
+        if (!isGrounded)
         {
             if (rb.velocity.y > 0 && playerState != State.JUMPING) ChangeState(State.JUMPING);
             else if (rb.velocity.y < 0 && playerState != State.FALLING) ChangeState(State.FALLING);

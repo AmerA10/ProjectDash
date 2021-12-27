@@ -61,14 +61,15 @@ public class DialogueV1 : MonoBehaviour
         colider = GetComponent<BoxCollider2D>();
         colider.size = triggerSize;
         colider.offset = triggerPosition;
-        ToggleVisibility();
         InitializeText();
+        ToggleVisibility(false);
         UpdateSprite();
-
+        
     }
 
     private void Update()
     {
+        if (!_visible) return;
         if (waitForInput && Input.GetKeyDown(KeyCode.Space))
         {
             waitForInput = false;
@@ -130,7 +131,7 @@ public class DialogueV1 : MonoBehaviour
         // Get the next text and set _text to it
         // Then update the display. 
         // If animating, animate it.
-
+        if (!_visible) return;
         if (_textList.Count > 0)
         {
             if (!_animateText || (_animateText && textbox.text.Equals(_text)))
@@ -162,7 +163,6 @@ public class DialogueV1 : MonoBehaviour
     // tehn use that percentage to find center after resizing.
     void UpdateSprite()
     {
-        if (!_visible) return;
         if (sprite == null || _fixedSize) return;
         int textLength = textbox.text.Length;
         float textWidth, textHeight;
