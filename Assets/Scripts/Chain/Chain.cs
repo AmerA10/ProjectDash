@@ -35,8 +35,8 @@ public class Chain : MonoBehaviour
         this.target = target;
         isHit = false;
         StartCoroutine(MoveToTarget());
-        EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
-        EventManager.Instance.TriggerCameraEffect(CameraEffect.DASH);
+        //EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
+        //EventManager.Instance.TriggerCameraEffect(CameraEffect.DASH);
 
     }
     IEnumerator MoveToTarget()

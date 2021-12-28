@@ -8,7 +8,7 @@ public class PlayerInput : MonoBehaviour
 {
     private float horizontalInput;
     private PlayerController playerController;
-  
+    [SerializeField] private bool isInteracting = false;
     private bool dashInput;
 
     void Awake()
@@ -30,7 +30,7 @@ public class PlayerInput : MonoBehaviour
             Debug.Log("You pressed l");
         }
         dashInput = Input.GetKeyDown(KeyCode.Space);
-        if(dashInput)
+        if(dashInput && !isInteracting)
         {
 
             playerController.AttemptJumpOrDash();
@@ -43,4 +43,8 @@ public class PlayerInput : MonoBehaviour
     }
 
     public float GetPlayerInputDirection() { return horizontalInput; }
+    public void SetInteracting(bool interacting)
+    {
+        this.isInteracting = interacting;
+    }
 }

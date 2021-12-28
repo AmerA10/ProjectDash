@@ -7,11 +7,14 @@ using System;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Exit : MonoBehaviour
 {
-    public Action OnLevelComplete;
+
+    [SerializeField] private Fader fader;
+    public Action OnExit;
 
     private void Awake()
     {
         GetComponent<BoxCollider2D>().enabled = true;
+        Debug.Log("ON!");
        
     }
     private void Start()
@@ -21,9 +24,11 @@ public class Exit : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        OnLevelComplete();
         Debug.Log("You completed the level");
+        OnExit();
+
     }
+
 
 
 }

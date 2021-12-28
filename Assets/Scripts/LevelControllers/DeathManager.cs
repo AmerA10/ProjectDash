@@ -10,12 +10,14 @@ public class DeathManager : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<PlayerController>();
-        player.OnDeath += ResetLanterns;
+        player.OnDeath += ResetPlayerPosition;
     }
 
-    private void ResetLanterns()
+    private void ResetPlayerPosition()
     {
         player.transform.position = spawnLocation.position;
     }
+
+    
 
 }

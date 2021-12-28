@@ -4,14 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
-    public void Start()
-    {
-        if(FindObjectOfType<Exit>())
-        {
-            FindObjectOfType<Exit>().OnLevelComplete += LoadNextLevel;
-        }
-       
-    }
+
     // Start is called before the first frame update
     public void LoadNextLevel()
     {

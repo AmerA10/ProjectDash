@@ -46,9 +46,13 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
 
-
+    [Header("Time Stuff")]
+    [SerializeField] private float timeFactor = 0.5f;
+    private float defaultFixedDeltaTime = 0.02f;
+    private float defaultTime = 1.0f;
+    private bool isInSlowMo = false;
+    [SerializeField] private bool TimeToggle = true;
     private Vector2 dashDirection;
-
 
     public void Die()
     {
@@ -76,7 +80,26 @@ public class PlayerController : MonoBehaviour
         {
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
+            TurnTime(true);
         }
+
+        
+    }
+
+    private void TurnTime(bool isSlow)
+    {
+        if(TimeToggle)
+        {
+            if (isInSlowMo == isSlow) return;
+            else
+            {
+                isInSlowMo = isSlow;
+            }
+            Debug.Log("Time: " + isSlow);
+            Time.timeScale = isSlow ? timeFactor : defaultTime;
+            Time.fixedDeltaTime = defaultFixedDeltaTime * Time.timeScale;
+        }
+        
     }
 
     private void AdjustPlayerState()
@@ -134,13 +157,13 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
+        TurnTime(false);
         rb.gravityScale = 0f;
         rb.drag = 8f;
 
         StartCoroutine(StartDashing());
 
         Debug.DrawLine(this.transform.position, (Vector2)this.transform.position + (dashDirection * dashSpeed), Color.green, 1f);
-
     }
     IEnumerator StartDashing()
     {
@@ -251,14 +274,21 @@ public class PlayerController : MonoBehaviour
 
         if (colliders.Length == 1)
         {
-            return colliders[0].transform;
+              
+                return colliders[0].transform;
         }
         else if (colliders.Length > 1)
         {
-            return FindClosestTarget(colliders);
+             
+                return FindClosestTarget(colliders);
+        }
+        else
+        {
+            TurnTime(false);
+            return null;
         }
 
-        return null;
+      
     }
 
     private Transform FindClosestTarget(RaycastHit2D[] targets)
@@ -281,7 +311,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
@@ -298,7 +328,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-
 
     private void DrawnAngle(Transform target, Vector2 dir)
     {
