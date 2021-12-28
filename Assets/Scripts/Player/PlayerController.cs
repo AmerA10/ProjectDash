@@ -206,7 +206,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
         }
 
-        else if (playerState == State.FALLING)
+        else if (playerState == State.FALLING || playerState == State.JUMPING)
         {
             //Player is falling without moving
 
