@@ -69,7 +69,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        CheckForGround();
+            CheckForGround();
+        
+            
 
         if (canDash) target = CheckForDashTarget();
         AdjustPlayerState();
@@ -100,7 +102,15 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerState == State.WALK_RIGHT) { ChangeState(State.IDLE_RIGHT); }
                 else if (playerState == State.WALK_LEFT) { ChangeState(State.IDLE_LEFT); }
-                else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
+               // else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
+            }
+        }
+        if(playerState == State.JUMPING)
+        {
+            if(rb.velocity.y <= 0)
+            {
+                ChangeState(State.FALLING);
+          
             }
         }
     
@@ -236,18 +246,20 @@ public class PlayerController : MonoBehaviour
     private void CheckForGround()
     {
         isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
+        Debug.DrawRay(this.transform.position, Vector2.down * checkGroundDistance, Color.yellow);
         if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
             if (playerState == State.FALLING) return;
             if (playerState == State.JUMPING) return;
 
-
+            Debug.Log("You are now falling");
             ChangeState(State.FALLING);
-        }
+        }                   
         else if (isGrounded)
         {
-            if (playerState == State.FALLING || playerState == State.JUMPING)
+            if (playerState == State.FALLING)
             {
+                Debug.Log("You are grouned to idle right");
                 ChangeState(State.IDLE_RIGHT);
             }
         }
