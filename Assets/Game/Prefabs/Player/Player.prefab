@@ -295,6 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0aca7dcc0e26824da9dde67bf852dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteracting: 0
 --- !u!114 &1867250974472447592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,7 +329,10 @@ MonoBehaviour:
   dashStopTime: 0.03
   hook: {fileID: 2448466951937124746}
   dashStrat: {fileID: 0}
+  canDash: 1
   jumpForce: 25
+  timeFactor: 0.5
+  TimeToggle: 1
 --- !u!114 &945429060
 MonoBehaviour:
   m_ObjectHideFlags: 0

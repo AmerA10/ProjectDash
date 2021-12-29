@@ -36,8 +36,8 @@ public class DialogueV1 : MonoBehaviour
     public float textCharacterWidth = 0.25f;
     public float textRowHeight = 0.3f;
     public float moreTextX;
-    public Vector2 triggerPosition;
-    public Vector2 triggerSize;
+    //public Vector2 triggerPosition;
+    //public Vector2 triggerSize;
 
 
     float timer = 0f;
@@ -59,8 +59,8 @@ public class DialogueV1 : MonoBehaviour
         textbox = GetComponentInChildren<TextMeshPro>();
         sprite = GetComponentInChildren<SpriteRenderer>();
         colider = GetComponent<BoxCollider2D>();
-        colider.size = triggerSize;
-        colider.offset = triggerPosition;
+        //colider.size = triggerSize;
+        //colider.offset = triggerPosition;
         InitializeText();
         ToggleVisibility(false);
         UpdateSprite();
@@ -229,14 +229,14 @@ public class DialogueV1 : MonoBehaviour
     {
         bool toggle = !sprite.enabled;
         sprite.enabled = toggle;
-        moreTextSprite.enabled = toggle;
+        moreTextSprite.enabled = toggle == true && _textList.Count > 0 ? toggle : false;
         textbox.enabled = toggle;
         _visible = toggle;
     }
     private void ToggleVisibility(bool visible)
     {
         sprite.enabled = visible;
-        moreTextSprite.enabled = visible;
+        moreTextSprite.enabled = visible == true && _textList.Count > 0 ? visible : false;
         textbox.enabled = visible;
         _visible = visible;
     }
