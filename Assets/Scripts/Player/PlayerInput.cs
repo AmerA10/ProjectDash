@@ -10,6 +10,7 @@ public class PlayerInput : MonoBehaviour
     private PlayerController playerController;
     [SerializeField] private bool isInteracting = false;
     private bool dashInput;
+    private IInteractable interactable;
 
     void Awake()
     {
@@ -30,16 +31,35 @@ public class PlayerInput : MonoBehaviour
             Debug.Log("You pressed l");
         }
         dashInput = Input.GetKeyDown(KeyCode.Space);
-        if(dashInput && !isInteracting)
+        if(dashInput)
         {
-
-            playerController.AttemptJumpOrDash();
+            if (interactable != null) interactable.HandleInteraction();
+            else
+            {
+                playerController.AttemptJumpOrDash();
+            }
+            
         }
     }
 
     private void FixedUpdate()
     {
         playerController.HandleMovementInput(horizontalInput);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.TryGetComponent<IInteractable>(out interactable))
+        {
+            Debug.Log("Got interactbale");
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.GetComponent<IInteractable>() != null && collision.GetComponent<IInteractable>() == interactable)
+        {
+            interactable = null;
+        }
     }
 
     public float GetPlayerInputDirection() { return horizontalInput; }
