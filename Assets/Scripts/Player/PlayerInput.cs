@@ -8,7 +8,6 @@ public class PlayerInput : MonoBehaviour
 {
     private float horizontalInput;
     private PlayerController playerController;
-    [SerializeField] private bool isInteracting = false;
     private bool dashInput;
     private IInteractable interactable;
 
@@ -63,8 +62,5 @@ public class PlayerInput : MonoBehaviour
     }
 
     public float GetPlayerInputDirection() { return horizontalInput; }
-    public void SetInteracting(bool interacting)
-    {
-        this.isInteracting = interacting;
-    }
+
 }
