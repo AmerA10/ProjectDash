@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018a60189a0d07a4cbf9a4fdc9fc92f8, type: 3}
+  m_Name: puCandle
+  m_EditorClassIdentifier: 
+  itemName: Candlestick
+  description: A golden stick of four candles
+  sprite: {fileID: 4337684191699249041, guid: eae0b87d0af4aa144b4f362e8eed4bbd, type: 3}
+  stackLimit: 1
