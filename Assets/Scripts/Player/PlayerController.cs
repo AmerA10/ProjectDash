@@ -42,18 +42,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Chain hook;
     [SerializeField] private Dashable dashStrat;
     [SerializeField] private bool canDash = true;
-
+    private Vector2 dashDirection;
 
     [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
 
-    [Header("Time Stuff")]
-    [SerializeField] private float timeFactor = 0.5f;
-    private float defaultFixedDeltaTime = 0.02f;
-    private float defaultTime = 1.0f;
-    private bool isInSlowMo = false;
-    [SerializeField] private bool TimeToggle = true;
-    private Vector2 dashDirection;
+    
+    public Action<bool> TimeAction;
 
     public void Die()
     {
@@ -83,27 +78,14 @@ public class PlayerController : MonoBehaviour
         {
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
-            TurnTime(true);
+            TimeAction(true);
+            //TurnTime(true);
         }
 
         
     }
 
-    private void TurnTime(bool isSlow)
-    {
-        if(TimeToggle)
-        {
-            if (isInSlowMo == isSlow) return;
-            else
-            {
-                isInSlowMo = isSlow;
-            }
-            Debug.Log("Time: " + isSlow);
-            Time.timeScale = isSlow ? timeFactor : defaultTime;
-            Time.fixedDeltaTime = defaultFixedDeltaTime * Time.timeScale;
-        }
-        
-    }
+
 
     private void AdjustPlayerState()
     {
@@ -121,11 +103,7 @@ public class PlayerController : MonoBehaviour
                 else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
             }
         }
-      /*  if (!isGrounded)
-        {
-            if (rb.velocity.y > 0 && playerState != State.JUMPING) ChangeState(State.JUMPING);
-            else if (rb.velocity.y < 0 && playerState != State.FALLING) ChangeState(State.FALLING);
-        }*/
+    
     }
 
     public void AttemptJumpOrDash()
@@ -163,7 +141,8 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
-        TurnTime(false);
+        TimeAction(false);
+        //TurnTime(false);
         rb.gravityScale = 0f;
         rb.drag = 8f;
 
@@ -291,7 +270,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            TurnTime(false);
+            TimeAction(false);
+            //TurnTime(false);
             return null;
         }
 
