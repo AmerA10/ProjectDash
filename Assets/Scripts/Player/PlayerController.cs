@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashStopTime = 0.2f;
     [SerializeField] private Chain hook;
     [SerializeField] private Dashable dashStrat;
+    [SerializeField] private bool canDash = true;
 
 
     [Header("Jump Stuff")]
@@ -56,6 +57,8 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
+        rb.velocity = Vector2.zero;
+        canDash = true;
         OnDeath();
     }
 
@@ -73,10 +76,10 @@ public class PlayerController : MonoBehaviour
     {
         CheckForGround();
 
-        if (playerState != State.SHOOT_RIGHT && playerState != State.SHOOT_LEFT) target = CheckForDashTarget();
+        if (canDash) target = CheckForDashTarget();
         AdjustPlayerState();
 
-        if (target != null && playerState != State.SHOOT_RIGHT && playerState != State.SHOOT_LEFT)
+        if (target != null && canDash)
         {
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
@@ -104,6 +107,8 @@ public class PlayerController : MonoBehaviour
 
     private void AdjustPlayerState()
     {
+        if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT) return;
+        
         if (isGrounded)
         {
             float inputDir = playerInput.GetPlayerInputDirection();
@@ -116,11 +121,11 @@ public class PlayerController : MonoBehaviour
                 else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
             }
         }
-        if (!isGrounded)
+      /*  if (!isGrounded)
         {
             if (rb.velocity.y > 0 && playerState != State.JUMPING) ChangeState(State.JUMPING);
             else if (rb.velocity.y < 0 && playerState != State.FALLING) ChangeState(State.FALLING);
-        }
+        }*/
     }
 
     public void AttemptJumpOrDash()
@@ -131,8 +136,9 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
-        else
+        else if(canDash)
         {
+            GrabHook();
             WaitTillHook();
         }
     }
@@ -167,23 +173,23 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator StartDashing()
     {
-
+        canDash = false;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
         dashStrat.TryDefaultDash(this.transform, dashDirection);
-
         playerAnimation.DashAnim(rb.velocity);
         StartCoroutine(FinishDashing());
     }
 
     IEnumerator FinishDashing()
     {
+       
         yield return new WaitForSeconds(dashTime);
-
+        canDash = true;
         if (rb.velocity.y > 0f) ChangeState(State.JUMPING);
         else ChangeState(State.FALLING);
-
-        rb.drag = 1f;
+        
+        rb.drag = 2f;
         rb.gravityScale = 1f;
         playerAnimation.EndDashAnim();
     }
@@ -256,6 +262,7 @@ public class PlayerController : MonoBehaviour
             if (playerState == State.FALLING) return;
             if (playerState == State.JUMPING) return;
 
+
             ChangeState(State.FALLING);
         }
         else if (isGrounded)
@@ -305,6 +312,7 @@ public class PlayerController : MonoBehaviour
     }
     private void ChangeState(State state)
     {
+        Debug.Log("CHANIGN TO :  " + state);
         if (playerState == state) return;
         playerState = state;
         playerAnimation.SetPlayerAnimation(state);
@@ -315,10 +323,12 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
-            if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT)
-                Debug.Log("Collided with: " + collision.name);
-            dashStrat.TryDash(this.transform, dashDirection);
-            GrabHook();
+            if(playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
+            {
+                GrabHook();
+                dashStrat.TryDash(this.transform, dashDirection);
+
+            }
 
         }
         if (collision.tag.Equals("DeathZone"))
@@ -344,5 +354,8 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(this.transform.position, dashRadius);
         Gizmos.color = Color.green;
         Gizmos.color = Color.yellow;
+        Gizmos.color = Color.cyan;
+        if(target != null)
+        Gizmos.DrawLine(this.transform.position, target.transform.position);
     }
 }

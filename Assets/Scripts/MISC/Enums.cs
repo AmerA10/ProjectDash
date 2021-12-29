@@ -15,6 +15,7 @@ namespace DashEnums
         WALK_RIGHT,
         SHOOT_LEFT,
         SHOOT_RIGHT,
+
     }
     public enum CameraEffect
     {

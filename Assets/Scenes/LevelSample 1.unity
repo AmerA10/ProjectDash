@@ -3280,6 +3280,10 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
+      propertyPath: dashTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: hookShot
       value: 
       objectReference: {fileID: 1995417215}
@@ -3289,12 +3293,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: TimeToggle
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: hookShotEnd
       value: 
       objectReference: {fileID: 1356948270}
+    - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
+      propertyPath: dashStopTime
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: trailRenderer
       value: 
