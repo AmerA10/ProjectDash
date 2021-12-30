@@ -6,5 +6,4 @@ public interface IInteractable
 {
     void HandleInteraction();
     bool IsInteractable();
-
 }

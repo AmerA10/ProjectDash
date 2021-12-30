@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ground Collision")]
     [SerializeField] private bool isGrounded = false;
-    [SerializeField] private float checkGroundDistance = 0.5f;
+    [SerializeField] private float checkGroundDistance = 0.1f;
+    [SerializeField] private Transform groundCheckTransform;
     public LayerMask whatIsGround;
 
     [Header("Dash Stuff")]
@@ -245,7 +246,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForGround()
     {
-        isGrounded = Physics2D.Raycast(this.transform.position, Vector2.down, checkGroundDistance, whatIsGround);
+        isGrounded = Physics2D.Raycast(groundCheckTransform.position, Vector2.down, checkGroundDistance, whatIsGround);
         Debug.DrawRay(this.transform.position, Vector2.down * checkGroundDistance, Color.yellow);
         if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
