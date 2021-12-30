@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System;
 [RequireComponent(typeof(BoxCollider2D))]
-public class Exit : MonoBehaviour
+public class Exit : MonoBehaviour, IInteractable
 {
 
     [SerializeField] private Fader fader;
@@ -25,6 +25,13 @@ public class Exit : MonoBehaviour
 
     }
 
+    public void HandleInteraction()
+    {
+        throw new NotImplementedException();
+    }
 
-
+    public bool IsInteractable()
+    {
+        throw new NotImplementedException();
+    }
 }
