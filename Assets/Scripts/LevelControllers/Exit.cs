@@ -14,12 +14,8 @@ public class Exit : MonoBehaviour
     private void Awake()
     {
         GetComponent<BoxCollider2D>().enabled = true;
-        Debug.Log("ON!");
-       
-    }
-    private void Start()
-    {
-
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        if (sprite) sprite.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

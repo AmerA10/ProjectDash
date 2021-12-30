@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ground Collision")]
     [SerializeField] private bool isGrounded = false;
-    [SerializeField] private float checkGroundDistance = 0.1f;
+    [SerializeField] private float checkGroundDistance = 0.05f;
     [SerializeField] private Transform groundCheckTransform;
     public LayerMask whatIsGround;
 
