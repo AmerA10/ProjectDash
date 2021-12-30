@@ -229,14 +229,14 @@ public class DialogueV1 : MonoBehaviour
     {
         bool toggle = !sprite.enabled;
         sprite.enabled = toggle;
-        moreTextSprite.enabled = toggle;
+        moreTextSprite.enabled = toggle == true && _textList.Count > 0 ? toggle : false;
         textbox.enabled = toggle;
         _visible = toggle;
     }
     private void ToggleVisibility(bool visible)
     {
         sprite.enabled = visible;
-        moreTextSprite.enabled = visible;
+        moreTextSprite.enabled = visible == true && _textList.Count > 0 ? visible : false;
         textbox.enabled = visible;
         _visible = visible;
     }
