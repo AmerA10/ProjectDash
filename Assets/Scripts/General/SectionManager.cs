@@ -12,6 +12,7 @@ public class SectionManager : MonoBehaviour
     /// </summary>
     [SerializeField] private Transform spawnLocation;
     [SerializeField] private SectionManager nextSection;
+    
     public Action OnSectionExit;
     void Start()
     {

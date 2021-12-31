@@ -8,7 +8,7 @@ using System;
 public class Exit : MonoBehaviour
 {
 
-    [SerializeField] private Fader fader;
+   
     public Action OnExit;
 
     private void Awake()

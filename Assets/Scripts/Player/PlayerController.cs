@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
     {
         if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT) return;
         
-        if (isGrounded)
+        if (isGrounded &&  playerState != State.JUMPING)
         {
             float inputDir = playerInput.GetPlayerInputDirection();
             if (inputDir > 0 && playerState != State.WALK_RIGHT) ChangeState(State.WALK_RIGHT);
@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
             if (playerState == State.JUMPING) return;
 
             Debug.Log("You are now falling");
-            ChangeState(State.FALLING);
+            if(rb.velocity.y < 0) ChangeState(State.FALLING);
         }                   
         else if (isGrounded)
         {

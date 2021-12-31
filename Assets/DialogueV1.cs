@@ -244,13 +244,13 @@ public class DialogueV1 : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.tag.Equals("Player") || !autoHide) return;
-        collision.GetComponent<PlayerInput>().SetInteracting(true);
+       // collision.GetComponent<PlayerInput>().SetInteracting(true);
         ToggleVisibility();
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (!collision.tag.Equals("Player") || !autoHide) return;
-        collision.GetComponent<PlayerInput>().SetInteracting(false);
+        //collision.GetComponent<PlayerInput>().SetInteracting(false);
         ToggleVisibility();
     }
 }
