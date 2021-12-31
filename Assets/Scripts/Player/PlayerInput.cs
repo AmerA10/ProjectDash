@@ -32,7 +32,7 @@ public class PlayerInput : MonoBehaviour
         dashInput = Input.GetKeyDown(KeyCode.Space);
         if(dashInput)
         {
-            if (interactable != null) interactable.HandleInteraction();
+            if (interactable != null && interactable.IsInteractable()) interactable.HandleInteraction();
             else
             {
                 playerController.AttemptJumpOrDash();

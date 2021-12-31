@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class DialogueV1 : MonoBehaviour
+public class DialogueV1 : MonoBehaviour, IInteractable
 {
     // TODO 
     // Add indicator to show when there's more text to read.
@@ -26,7 +26,6 @@ public class DialogueV1 : MonoBehaviour
     GameObject moreText;
     [SerializeField]
     SpriteRenderer moreTextSprite;
-    BoxCollider2D colider;
 
     public string dialogue;
     public float delay = 0.01f;
@@ -36,9 +35,6 @@ public class DialogueV1 : MonoBehaviour
     public float textCharacterWidth = 0.25f;
     public float textRowHeight = 0.3f;
     public float moreTextX;
-    public Vector2 triggerPosition;
-    public Vector2 triggerSize;
-
 
     float timer = 0f;
     List<string> _textList;
@@ -58,25 +54,16 @@ public class DialogueV1 : MonoBehaviour
         ParseDialogue();
         textbox = GetComponentInChildren<TextMeshPro>();
         sprite = GetComponentInChildren<SpriteRenderer>();
-        colider = GetComponent<BoxCollider2D>();
-        colider.size = triggerSize;
-        colider.offset = triggerPosition;
         InitializeText();
         ToggleVisibility(false);
         UpdateSprite();
-        
+
     }
 
     private void Update()
     {
         if (!_visible) return;
-        if (waitForInput && Input.GetKeyDown(KeyCode.Space))
-        {
-            waitForInput = false;
-            timer = 0f;
-            UpdateSettings();
-        }
-        else if (!waitForInput)
+        if (!waitForInput)
         {
             if (_animateText)
             {
@@ -87,6 +74,14 @@ public class DialogueV1 : MonoBehaviour
 
         }
         UpdateSprite();
+    }
+
+    void LoadNextLine()
+    {
+        if (!waitForInput || _textList.Count == 0) return;
+        waitForInput = false;
+        timer = 0f;
+        UpdateSettings();
     }
 
     void ParseDialogue()
@@ -229,14 +224,14 @@ public class DialogueV1 : MonoBehaviour
     {
         bool toggle = !sprite.enabled;
         sprite.enabled = toggle;
-        moreTextSprite.enabled = toggle;
+        moreTextSprite.enabled = toggle == true && _textList.Count > 0 ? toggle : false;
         textbox.enabled = toggle;
         _visible = toggle;
     }
     private void ToggleVisibility(bool visible)
     {
         sprite.enabled = visible;
-        moreTextSprite.enabled = visible;
+        moreTextSprite.enabled = visible == true && _textList.Count > 0 ? visible : false;
         textbox.enabled = visible;
         _visible = visible;
     }
@@ -244,7 +239,7 @@ public class DialogueV1 : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.tag.Equals("Player") || !autoHide) return;
-       // collision.GetComponent<PlayerInput>().SetInteracting(true);
+        //collision.GetComponent<PlayerInput>().SetInteracting(true);
         ToggleVisibility();
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -252,5 +247,15 @@ public class DialogueV1 : MonoBehaviour
         if (!collision.tag.Equals("Player") || !autoHide) return;
         //collision.GetComponent<PlayerInput>().SetInteracting(false);
         ToggleVisibility();
+    }
+
+    public void HandleInteraction()
+    {
+        LoadNextLine();
+    }
+
+    public bool IsInteractable()
+    {
+        return _textList.Count > 0;
     }
 }

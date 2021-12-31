@@ -70,7 +70,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: 722582cb37225144a9feb7857dce9b3d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -159,7 +159,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 12
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5545788767427337062
 MonoBehaviour:
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_renderer: {fileID: 5545788767427337065}
   m_maskType: 0
   _SortingLayerID: 0
-  _SortingOrder: 0
+  _SortingOrder: 12
 --- !u!95 &5545788767427337063
 Animator:
   serializedVersion: 3
@@ -319,13 +319,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animateText: 1
-  bounce: 1
+  bounce: 0
   fixedSize: 0
   autoHide: 1
   moreText: {fileID: 7673333428723989125}
   moreTextSprite: {fileID: 664286515130511393}
-  dialogue: Hey!|This text box can be  dynamic or static size!|It waits for input...|animated
-    text and bouncing can be toggled on or off.
+  dialogue: Hey there... [ Space ] |There's some creature that's been stealing precious
+    items from the village.|I followed it up here...|but, I can't jump over that
+    wall.| Could you recover the stolen items for me?|Here's a list of what's been
+    taken. [ TAB ]
   delay: 0.05
   maxCharsWide: 20
   textPaddingTop: 2.5
@@ -333,8 +335,6 @@ MonoBehaviour:
   textCharacterWidth: 0.425
   textRowHeight: 0.6
   moreTextX: 22.22
-  triggerPosition: {x: -4.75, y: -3.6}
-  triggerSize: {x: 2.05, y: 2.16}
 --- !u!61 &573652167489866065
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -348,7 +348,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -4.73, y: -3.59}
+  m_Offset: {x: -4.6, y: -3.8}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -359,7 +359,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.04, y: 2.16}
+  m_Size: {x: 3, y: 1.5}
   m_EdgeRadius: 0
 --- !u!1 &5545788768177372198
 GameObject:
@@ -434,7 +434,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 0be0a4d76fd4b644dbd5f7ed49b7aef1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

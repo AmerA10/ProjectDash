@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System;
 [RequireComponent(typeof(BoxCollider2D))]
-public class Exit : MonoBehaviour
+public class Exit : MonoBehaviour, IInteractable
 {
 
    
@@ -14,12 +14,8 @@ public class Exit : MonoBehaviour
     private void Awake()
     {
         GetComponent<BoxCollider2D>().enabled = true;
-        Debug.Log("ON!");
-       
-    }
-    private void Start()
-    {
-
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        if (sprite) sprite.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -29,6 +25,13 @@ public class Exit : MonoBehaviour
 
     }
 
+    public void HandleInteraction()
+    {
+        throw new NotImplementedException();
+    }
 
-
+    public bool IsInteractable()
+    {
+        throw new NotImplementedException();
+    }
 }

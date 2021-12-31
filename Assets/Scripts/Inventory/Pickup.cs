@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 
 // TODO - implement IInteractable
-public class Pickup : MonoBehaviour
+public class Pickup : MonoBehaviour, IInteractable
 {
     [SerializeField]
     SOPickup _data;
@@ -12,8 +12,7 @@ public class Pickup : MonoBehaviour
     [SerializeField]
     SpriteRenderer _sprite;
 
-    [SerializeField]
-    TextMeshPro _text;
+    public TextMeshPro _text { get; private set; }
 
     [SerializeField]
     int count { get; set; }
@@ -33,10 +32,13 @@ public class Pickup : MonoBehaviour
             Debug.LogError("Pickup item requires a SOPickup, but it's null!");
             return;
         }
+        _text = GetComponentInChildren<TextMeshPro>();
         _text.text = _data.itemName;
         _text.enabled = false;
-        _sprite.sprite = _data.sprite;
+        _sprite.sprite = _data.sprite;  
     }
+
+    public SOPickup GetData() { return _data; }
 
     /*
      *  SetVisibility - indicates whether or not this item is visible in the game.
@@ -120,7 +122,7 @@ public class Pickup : MonoBehaviour
     {
         int remainder = Inventory.Instance.AddItem(this);
         if (remainder > 0) count = remainder;
-        else Destroy(this);
+        else this.gameObject.SetActive(false);
     }
 
     public bool IsInteractable() { return true; }
