@@ -8,30 +8,40 @@ using System;
 public class Exit : MonoBehaviour, IInteractable
 {
 
-   
-    public Action OnExit;
+    [SerializeField] private Exit destination;
+    [SerializeField] private SectionManager section;
+
 
     private void Awake()
     {
         GetComponent<BoxCollider2D>().enabled = true;
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        if (sprite) sprite.enabled = false;
+       // if (sprite) sprite.enabled = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("You completed the level");
-        OnExit();
 
+    public void SetSection(SectionManager section)
+    {
+        this.section = section;
+    }
+
+    public SectionManager GetSection()
+    {
+        return section;
+    }
+
+    public Exit GetDesitnation()
+    {
+        return destination;
     }
 
     public void HandleInteraction()
     {
-        throw new NotImplementedException();
+        section.TeleportPlayer(destination);
     }
 
     public bool IsInteractable()
     {
-        throw new NotImplementedException();
+        return true;
     }
 }

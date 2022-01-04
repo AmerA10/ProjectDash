@@ -9,28 +9,25 @@ public class SectionTransition : MonoBehaviour
     [SerializeField] private Fader fader;
     [SerializeField] private SectionManager currentSection;
 
+
     void Start()
     {
-        currentSection.OnSectionExit += TransitionToNextSection;
+        currentSection.OnSectionTeleport += TransitionToNextSection;
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void TransitionToNextSection(Exit destination, SectionManager section)
     {
-        
+        StartCoroutine(Transition(destination, section));
     }
 
-    private void TransitionToNextSection()
-    {
-        StartCoroutine(Transition());
-    }
-
-    private IEnumerator Transition()
+    private IEnumerator Transition(Exit destination, SectionManager section)
     {
         yield return fader.FadeOut(2f);
         Debug.Log("Waited");
-        FindObjectOfType<PlayerController>().transform.position = currentSection.GetNextSection().GetSectionSpawnLocation();
-        currentSection = currentSection.GetNextSection();
+        FindObjectOfType<PlayerController>().transform.position = destination.transform.position;
+        GetComponent<DeathManager>().SetSpawnLocation(destination.transform);
+        currentSection = section;
         yield return fader.FadeIn(1f);
 
     }

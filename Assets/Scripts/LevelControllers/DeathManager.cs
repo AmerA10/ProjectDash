@@ -18,6 +18,9 @@ public class DeathManager : MonoBehaviour
         player.transform.position = spawnLocation.position;
     }
 
-    
+    public void SetSpawnLocation(Transform spawnLocation)
+    {
+        this.spawnLocation = spawnLocation;
+    }
 
 }

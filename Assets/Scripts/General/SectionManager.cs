@@ -5,39 +5,27 @@ using System;
 public class SectionManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] private Exit exit;
+    [SerializeField] private Exit[] exits;
     /// <summary>
     /// <tooltip>
     /// Spawn Location of current Section</tooltip>
     /// </summary>
-    [SerializeField] private Transform spawnLocation;
-    [SerializeField] private SectionManager nextSection;
-    
-    public Action OnSectionExit;
+
+
+    public Action<Exit, SectionManager> OnSectionTeleport;
     void Start()
     {
-        exit = GetComponentInChildren<Exit>();
-        exit.OnExit += OnSectionComplete;
+        exits = GetComponentsInChildren<Exit>();
+        foreach (Exit exit in exits) {
+            exit.SetSection(this);
+        }
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void TeleportPlayer(Exit destination) {
+
+        OnSectionTeleport(destination, destination.GetSection());
+
     }
 
-    public void OnSectionComplete()
-    {
-        OnSectionExit();
-    }
-
-    public Vector3 GetSectionSpawnLocation()
-    {
-        return spawnLocation.position;
-    }
-    public SectionManager GetNextSection()
-    {
-        return nextSection;
-    }
 }
