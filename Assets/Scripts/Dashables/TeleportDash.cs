@@ -10,8 +10,17 @@ public class TeleportDash : Dashable
 
     private void Awake()
     {
-        dashType = new DSTeleport(exit);
+         dashType = new DSTeleport(exit);
         defaultDash = new DSDefault();
+
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        if (exit != null)
+        {
+            Gizmos.DrawLine(this.transform.position, exit.transform.position);
+        }
 
     }
 

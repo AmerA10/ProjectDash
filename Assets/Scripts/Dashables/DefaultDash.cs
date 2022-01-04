@@ -10,7 +10,7 @@ public class DefaultDash : Dashable
 
     private void Awake()
     {
-        defaultDash = new DSDefault(dashSpeed);
+         defaultDash = new DSDefault(dashSpeed);
 
     }
 
