@@ -15,6 +15,6 @@ public class DSDamage : IDashable
     
     public void HandleDash(Transform player, Vector2 dashDir)
     {
-        health.TakeDamage(10);
+        health.TakeDamage(1);
     }
 }

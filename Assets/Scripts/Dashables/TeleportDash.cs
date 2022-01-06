@@ -11,7 +11,7 @@ public class TeleportDash : Dashable
     private void Awake()
     {
          dashType = new DSTeleport(exit);
-        defaultDash = new DSDefault();
+         defaultDash = new DSDefault();
 
     }
 

@@ -11,7 +11,6 @@ public class DefaultDash : Dashable
     private void Awake()
     {
          defaultDash = new DSDefault(dashSpeed);
-
     }
 
 }

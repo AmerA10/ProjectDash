@@ -10,7 +10,7 @@ public class TriggerDash : Dashable
     private void Awake()
     {
          defaultDash = new DSDefault();
-        dashType = new DSTrigger(interactable.GetComponent<IInteractable>());
+         dashType = new DSTrigger(interactable.GetComponent<IInteractable>());
     }
     void Start()
     {
