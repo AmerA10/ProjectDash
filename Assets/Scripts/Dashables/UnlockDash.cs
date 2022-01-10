@@ -1,0 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class UnlockDash : MonoBehaviour, IInteractable
+{
+    public GameObject exit;
+
+    public GameObject lockedDoor;
+
+    private void Awake()
+    {
+        exit.SetActive(false);
+        lockedDoor.SetActive(true);
+    }
+
+    public void HandleInteraction()
+    {
+        exit.SetActive(true);
+        lockedDoor.SetActive(false);
+    }
+
+    public bool IsInteractable()
+    {
+        return !exit.activeSelf;
+    }
+}
