@@ -16,7 +16,7 @@ public class Exit : MonoBehaviour, IInteractable
     {
         GetComponent<BoxCollider2D>().enabled = true;
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-       // if (sprite) sprite.enabled = false;
+        if (sprite) sprite.enabled = false;
     }
 
 

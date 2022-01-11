@@ -13,7 +13,7 @@ public class SectionManager : MonoBehaviour
 
 
     public Action<Exit, SectionManager> OnSectionTeleport;
-    void Start()
+    void Awake()
     {
         exits = GetComponentsInChildren<Exit>();
         foreach (Exit exit in exits) {

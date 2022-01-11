@@ -8,7 +8,7 @@ public class UnlockDash : MonoBehaviour, IInteractable
 
     public GameObject lockedDoor;
 
-    private void Awake()
+    private void Start()
     {
         exit.SetActive(false);
         lockedDoor.SetActive(true);
