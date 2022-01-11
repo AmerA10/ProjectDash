@@ -23,9 +23,7 @@ public class SectionManager : MonoBehaviour
     }
 
     public void TeleportPlayer(Exit destination) {
-
         OnSectionTeleport(destination, destination.GetSection());
-
     }
 
 }
