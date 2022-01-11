@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
         {
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
-            TimeAction(true);
+            TimeAction?.Invoke(true);
             //TurnTime(true);
         }
 
@@ -283,7 +283,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            TimeAction(false);
+            TimeAction?.Invoke(false);
             //TurnTime(false);
             return null;
         }

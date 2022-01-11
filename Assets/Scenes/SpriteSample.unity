@@ -25344,6 +25344,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5729395934950749669, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5729395934950749669, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
+      propertyPath: TimeToggle
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
