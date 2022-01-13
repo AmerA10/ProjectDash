@@ -24,4 +24,13 @@ public class UnlockDash : MonoBehaviour, IInteractable
     {
         return !exit.activeSelf;
     }
+    public void HandleReset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool CanReset()
+    {
+        throw new System.NotImplementedException();
+    }
 }

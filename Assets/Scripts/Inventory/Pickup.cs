@@ -126,4 +126,14 @@ public class Pickup : MonoBehaviour, IInteractable
     }
 
     public bool IsInteractable() { return true; }
+
+    public void HandleReset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool CanReset()
+    {
+        throw new System.NotImplementedException();
+    }
 }

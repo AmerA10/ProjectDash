@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(DeathManager))]
 public class SectionTransition : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -9,35 +10,48 @@ public class SectionTransition : MonoBehaviour
     [SerializeField] private Fader fader;
     [SerializeField] private SectionManager currentSection;
     [SerializeField] private Transform sceneStart;
-
+    private PlayerController player;
+    private DeathManager dm;
+    [SerializeField] private CameraController mainCamera;
 
     void Start()
     {
+        dm = GetComponent<DeathManager>();
+        dm.SetSpawnLocation(sceneStart);
+        player = FindObjectOfType<PlayerController>();
         Debug.Log("!!!!!!!!!Starting Section Transition");
-        currentSection.OnSectionTeleport += TransitionToNextSection;
+        currentSection.OnSectionTeleport += TransitionToNextSection; 
+        SetUpPlayer();
+        SetCameraClamps();
+    }
+
+    private void SetUpPlayer()
+    {
+        player.OnDeath += currentSection.ResetIInteractables;
+        player.transform.position = currentSection.GetSpawnLocation().position;
     }
 
     public void RecievePlayer()
     {
-        FindObjectOfType<PlayerInput>().enabled = false;
+        player.GetComponent<PlayerInput>().enabled = false;
         fader.FadeOutImmediate();
         Debug.Log("Starting scene");
         if(sceneStart == null)
         {
             Debug.LogError("sceneStart location not set, no place to put player");
         }
-        FindObjectOfType<PlayerController>().transform.position = sceneStart.position;
+        player.transform.position = sceneStart.position;
         GetComponent<DeathManager>().SetSpawnLocation(sceneStart);
         StartCoroutine(StartScene());
   
     }
 
-    public IEnumerator StartScene()
+    private IEnumerator StartScene()
     {
         //Put the player at the starting point
         //Probably do any saving stuff that needs to be done
         yield return fader.FadeIn(1f);
-        FindObjectOfType<PlayerInput>().enabled = true;
+        player.GetComponent<PlayerInput>().enabled = true;
     }
 
 
@@ -48,12 +62,23 @@ public class SectionTransition : MonoBehaviour
 
     private IEnumerator Transition(Exit destination, SectionManager section)
     {
+
         yield return fader.FadeOut(2f);
         Debug.Log("Waited");
-        FindObjectOfType<PlayerController>().transform.position = destination.transform.position;
+        player.transform.position = destination.transform.position;
         GetComponent<DeathManager>().SetSpawnLocation(destination.transform);
+        player.OnDeath -= currentSection.ResetIInteractables;
+        currentSection.OnSectionTeleport -= TransitionToNextSection;
         currentSection = section;
+        player.OnDeath += currentSection.ResetIInteractables;
+        currentSection.OnSectionTeleport += TransitionToNextSection;
+        SetCameraClamps();
         yield return fader.FadeIn(1f);
 
+    }
+
+    private void SetCameraClamps()
+    {
+        mainCamera.SetClamp(currentSection.GetXClamp(), currentSection.GetYClamp());
     }
 }

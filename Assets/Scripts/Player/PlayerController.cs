@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
-        TimeAction(false);
+        TimeAction?.Invoke(false);
         //TurnTime(false);
         rb.gravityScale = 0f;
         rb.drag = 8f;
@@ -253,14 +253,15 @@ public class PlayerController : MonoBehaviour
             if (playerState == State.FALLING) return;
             if (playerState == State.JUMPING) return;
 
-            Debug.Log("You are now falling");
+          
             if(rb.velocity.y < 0) ChangeState(State.FALLING);
         }                   
         else if (isGrounded)
         {
             if (playerState == State.FALLING)
             {
-                Debug.Log("You are grouned to idle right");
+                
+
                 ChangeState(State.IDLE_RIGHT);
             }
         }
@@ -305,7 +306,7 @@ public class PlayerController : MonoBehaviour
     }
     private void ChangeState(State state)
     {
-        Debug.Log("CHANIGN TO :  " + state);
+        
         if (playerState == state) return;
         playerState = state;
         playerAnimation.SetPlayerAnimation(state);

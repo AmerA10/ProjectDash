@@ -258,4 +258,14 @@ public class DialogueV1 : MonoBehaviour, IInteractable
     {
         return _textList.Count > 0;
     }
+
+    public void HandleReset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool CanReset()
+    {
+        throw new System.NotImplementedException();
+    }
 }

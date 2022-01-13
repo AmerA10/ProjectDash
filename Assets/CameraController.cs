@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Vector2 _xCamClamp;
@@ -20,6 +21,7 @@ public class CameraController : MonoBehaviour
     {
         LerpToPlayer();
         ClampCameraPosition();
+
     }
 
     private void Reset()
@@ -37,14 +39,25 @@ public class CameraController : MonoBehaviour
 
     void ClampCameraPosition()
     {
+        
         Vector3 target = new Vector3(Mathf.Clamp(transform.position.x, _xCamClamp.x, _xCamClamp.y), Mathf.Clamp(transform.position.y, _yCamClamp.x, _yCamClamp.y), transform.position.z);
         transform.position = target;
     }
 
+    public void CalculateSizeFromClamps()
+    {
+        float size = (Mathf.Abs(_xCamClamp.y  - _xCamClamp.x)) * Screen.height / Screen.width * 0.5f;
+        Camera.main.orthographicSize = size;
+    }
 
     public void SetClamp(Vector2 xCamClamp, Vector2 yCamClamp)
     {
         _xCamClamp = xCamClamp;
         _yCamClamp = yCamClamp;
+        CalculateSizeFromClamps();
     }
+
+
+
+
 }

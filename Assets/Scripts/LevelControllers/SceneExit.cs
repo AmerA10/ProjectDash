@@ -51,4 +51,13 @@ public class SceneExit : MonoBehaviour, IInteractable
         Destroy(gameObject);
 
     }
+    public void HandleReset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool CanReset()
+    {
+        throw new System.NotImplementedException();
+    }
 }

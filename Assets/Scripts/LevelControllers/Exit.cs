@@ -44,4 +44,13 @@ public class Exit : MonoBehaviour, IInteractable
     {
         return true;
     }
+    public void HandleReset()
+    {
+       
+    }
+
+    public bool CanReset()
+    {
+        return false;
+    }
 }

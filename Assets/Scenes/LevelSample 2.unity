@@ -187,7 +187,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &70707844
 PrefabInstance:
@@ -2084,7 +2084,7 @@ Transform:
   - {fileID: 619548930}
   - {fileID: 1198320587}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1174623019
 MonoBehaviour:
@@ -2099,6 +2099,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exits: []
+  xCamClamp: {x: 0, y: 0}
+  yCamClamp: {x: 0, y: 0}
+  spawnLocation: {fileID: 0}
 --- !u!1 &1192868967
 GameObject:
   m_ObjectHideFlags: 0
@@ -2151,6 +2154,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exits: []
+  xCamClamp: {x: 0, y: 0}
+  yCamClamp: {x: 0, y: 0}
+  spawnLocation: {fileID: 0}
 --- !u!1 &1198320586
 GameObject:
   m_ObjectHideFlags: 0
@@ -2963,6 +2969,7 @@ MonoBehaviour:
   fader: {fileID: 1321530259}
   currentSection: {fileID: 1192868969}
   sceneStart: {fileID: 1683692904}
+  mainCamera: {fileID: 0}
 --- !u!1 &1850689868
 GameObject:
   m_ObjectHideFlags: 0
