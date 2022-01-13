@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(DeathManager))]
-public class SectionTransition : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
@@ -19,7 +19,6 @@ public class SectionTransition : MonoBehaviour
         dm = GetComponent<DeathManager>();
         dm.SetSpawnLocation(sceneStart);
         player = FindObjectOfType<PlayerController>();
-        Debug.Log("!!!!!!!!!Starting Section Transition");
         currentSection.OnSectionTeleport += TransitionToNextSection; 
         SetUpPlayer();
         SetCameraClamps();

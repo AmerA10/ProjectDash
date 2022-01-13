@@ -46,7 +46,7 @@ public class SceneExit : MonoBehaviour, IInteractable
         yield return fader.FadeOut(1f);
         yield return SceneManager.LoadSceneAsync(sceneID);
         Debug.Log("recieving player");
-        FindObjectOfType<SectionTransition>().RecievePlayer();
+        FindObjectOfType<LevelManager>().RecievePlayer();
         Destroy(fader);
         Destroy(gameObject);
 
