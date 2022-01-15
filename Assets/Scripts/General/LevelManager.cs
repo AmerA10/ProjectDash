@@ -14,6 +14,9 @@ public class LevelManager : MonoBehaviour
     private DeathManager dm;
     [SerializeField] private CameraController mainCamera;
 
+    [SerializeField] float fadeOutTime = 2f;
+    [SerializeField] float fadeInTime = 1f;
+
     void Start()
     {
         dm = GetComponent<DeathManager>();
@@ -62,7 +65,7 @@ public class LevelManager : MonoBehaviour
     private IEnumerator Transition(Exit destination, SectionManager section)
     {
 
-        yield return fader.FadeOut(2f);
+        yield return fader.FadeOut(fadeOutTime);
         Debug.Log("Waited");
         player.transform.position = destination.transform.position;
         GetComponent<DeathManager>().SetSpawnLocation(destination.transform);
@@ -72,7 +75,7 @@ public class LevelManager : MonoBehaviour
         player.OnDeath += currentSection.ResetIInteractables;
         currentSection.OnSectionTeleport += TransitionToNextSection;
         SetCameraClamps();
-        yield return fader.FadeIn(1f);
+        yield return fader.FadeIn(fadeInTime);
 
     }
 
