@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class CameraController : MonoBehaviour
     Transform _player;
 
     [Range(0f, 1f)] public float speed;
+
+   
 
     void Awake()
     {
@@ -54,7 +56,25 @@ public class CameraController : MonoBehaviour
     {
         _xCamClamp = xCamClamp;
         _yCamClamp = yCamClamp;
-        CalculateSizeFromClamps();
+       
+    }
+
+    public void LerpToCameraSize(float size, float lerpSpeed)
+    {
+        StopAllCoroutines();
+        StartCoroutine(LerpToSize(size, lerpSpeed));
+    }
+
+    private IEnumerator LerpToSize(float size, float lerpSpeed)
+    {
+        float sizeToBeLerped = Camera.main.orthographicSize; ;
+        while (sizeToBeLerped != size)
+        {
+            sizeToBeLerped = Mathf.Lerp(sizeToBeLerped, size, lerpSpeed);
+            Camera.main.orthographicSize = sizeToBeLerped;
+            yield return null;
+
+        }
     }
 
 
