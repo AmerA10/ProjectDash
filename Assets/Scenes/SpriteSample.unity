@@ -12353,6 +12353,8 @@ MonoBehaviour:
   currentSection: {fileID: 687170767}
   sceneStart: {fileID: 0}
   mainCamera: {fileID: 1866586586}
+  fadeOutTime: 2
+  fadeInTime: 1
 --- !u!1001 &329707736
 PrefabInstance:
   m_ObjectHideFlags: 0
