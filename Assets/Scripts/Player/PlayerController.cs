@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [Header("Moving Left and Right")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float airMoveSpeed = 20f;
+    private bool isRight = true;
 
     [Header("Falling")]
     [SerializeField] private float fallMultiplier = 2.5f;
@@ -70,9 +71,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-            CheckForGround();
-        
-            
+        CheckForGround();
 
         if (canDash) target = CheckForDashTarget();
         AdjustPlayerState();
@@ -184,7 +183,7 @@ public class PlayerController : MonoBehaviour
         playerAnimation.EndDashAnim();
     }
 
-    private void GrabHook()
+    public void GrabHook()
     {
         hook.transform.parent = this.transform;
         hook.transform.position = this.transform.position;
@@ -195,6 +194,7 @@ public class PlayerController : MonoBehaviour
     //Move this out of the class. Or move dashing out of the class.
     public void HandleMovementInput(float horizontalFloat)
     {
+        isRight = horizontalFloat > 0 ? true : false;
         if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
         if (isGrounded)
         {
@@ -330,6 +330,13 @@ public class PlayerController : MonoBehaviour
             GrabHook();
             Die();
 
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
+        {
+            GrabHook();
         }
     }
 

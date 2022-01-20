@@ -36,6 +36,12 @@ public class EditorSectionManager : MonoBehaviour
         cam = FindObjectOfType<CameraController>();
         cam.SetClamp(xCLamp, yCLamp);
     }
+    public void ResetClamps()
+    {
+        xCLamp.x = this.transform.position.x;
+        xCLamp.y = this.transform.position.x;
+        yCLamp = Vector2.zero;
+    }
 
     private void OnDrawGizmosSelected()
     {
@@ -69,6 +75,10 @@ public class customeInspector : Editor
         if (GUILayout.Button("Apply Clamps to Camera"))
         {
             esm.ApplyClampsToCam();
+        }
+        if(GUILayout.Button("Reset Clamps"))
+        {
+            esm.ResetClamps();
         }
 
     }

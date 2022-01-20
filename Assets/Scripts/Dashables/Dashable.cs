@@ -16,6 +16,7 @@ public class Dashable : MonoBehaviour
     public void TryDash(Transform player, Vector2 dashDirdirection)
     {
         dashType?.HandleDash( player,  dashDirdirection);
+        player.GetComponent<PlayerController>().GrabHook();
      
 
     }

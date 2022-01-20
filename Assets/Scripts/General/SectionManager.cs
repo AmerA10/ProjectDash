@@ -33,13 +33,13 @@ public class SectionManager : MonoBehaviour
         OnSectionTeleport(destination, destination.GetSection());
     }
 
-    public void ResetIInteractables()
+/*    public void ResetIInteractables()
     {
         foreach (IInteractable inter in interactables)
         {
             if(inter.CanReset()) inter.HandleReset();
         }
-    }
+    }*/
 
     public Transform GetSpawnLocation()
     {
