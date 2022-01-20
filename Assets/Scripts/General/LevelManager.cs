@@ -52,7 +52,7 @@ public class LevelManager : MonoBehaviour
     {
         //Put the player at the starting point
         //Probably do any saving stuff that needs to be done
-        yield return fader.FadeIn(1f);
+        yield return fader.FadeIn(fadeInTime);
         player.GetComponent<PlayerInput>().enabled = true;
     }
 
@@ -64,7 +64,7 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator Transition(Exit destination, SectionManager section)
     {
-
+        player.GetComponent<PlayerInput>().enabled = false;
         yield return fader.FadeOut(fadeOutTime);
         Debug.Log("Waited");
         player.transform.position = destination.transform.position;
@@ -76,7 +76,7 @@ public class LevelManager : MonoBehaviour
         currentSection.OnSectionTeleport += TransitionToNextSection;
         SetCameraClamps();
         yield return fader.FadeIn(fadeInTime);
-
+        player.GetComponent<PlayerInput>().enabled = true;
     }
 
     private void SetCameraClamps()

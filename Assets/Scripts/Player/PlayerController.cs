@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Chain hook;
     [SerializeField] private Dashable dashStrat;
     [SerializeField] private bool canDash = true;
+    private bool isHookCaught = false;
     private Vector2 dashDirection;
 
     [Header("Jump Stuff")]
@@ -139,6 +140,7 @@ public class PlayerController : MonoBehaviour
 
     public void WaitTillHook()
     {
+        hook.GetComponent<SpriteRenderer>().enabled = false;
         if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) { ChangeState(State.SHOOT_RIGHT); }
         else if (playerState != State.SHOOT_LEFT) { ChangeState(State.SHOOT_LEFT); }
 
@@ -151,6 +153,7 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
+ 
         TimeAction?.Invoke(false);
         //TurnTime(false);
         rb.gravityScale = 0f;
@@ -189,6 +192,7 @@ public class PlayerController : MonoBehaviour
         hook.transform.position = this.transform.position;
         hook.canHit = false;
         hook.SetTrailActive(false);
+        hook.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     //Move this out of the class. Or move dashing out of the class.
