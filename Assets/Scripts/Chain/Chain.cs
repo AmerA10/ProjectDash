@@ -22,11 +22,17 @@ public class Chain : MonoBehaviour
     {
         isHit = false;
         SetTrailActive(false);
+        
     }
 
+    public void Catch()
+    {
+        hookShotEnd.GetComponent<SpriteRenderer>().enabled = false;
+    }
 
     public void ShootHookTo(Transform target)
     {
+        hookShotEnd.GetComponent<SpriteRenderer>().enabled = true;
         SetTrailActive(true);
         this.transform.parent = null;
         Vector2 directionToTarget = target.position - this.transform.position;
@@ -37,7 +43,6 @@ public class Chain : MonoBehaviour
         StartCoroutine(MoveToTarget());
         //EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
         //EventManager.Instance.TriggerCameraEffect(CameraEffect.DASH);
-
     }
     IEnumerator MoveToTarget()
     {
@@ -58,6 +63,7 @@ public class Chain : MonoBehaviour
         }
 
     }
+
     public void SetTrailActive(bool isActive)
     {
         if (isActive) trail.StartComputing();

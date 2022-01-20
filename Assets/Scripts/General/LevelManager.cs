@@ -81,6 +81,7 @@ public class LevelManager : MonoBehaviour
 
     private void SetCameraClamps()
     {
+        Debug.Log("Setting up clamps");
         mainCamera.SetClamp(currentSection.GetXClamp(), currentSection.GetYClamp());
     }
 }

@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimation playerAnimation;
     private PlayerInput playerInput;
 
-
     public Action OnDeath;
 
     [Header("Moving Left and Right")]
@@ -34,6 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheckTransform;
     public LayerMask whatIsGround;
 
+
     [Header("Dash Stuff")]
     [SerializeField] private float dashRadius = 5f;
     [SerializeField] LayerMask whatIsDashable;
@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
 
-    
     public Action<bool> TimeAction;
 
     public void Die()
@@ -85,10 +84,7 @@ public class PlayerController : MonoBehaviour
             //TurnTime(true);
         }
 
-        
     }
-
-
 
     private void AdjustPlayerState()
     {
@@ -113,8 +109,7 @@ public class PlayerController : MonoBehaviour
                 ChangeState(State.FALLING);
           
             }
-        }
-    
+        }   
     }
 
     public void AttemptJumpOrDash()
@@ -192,7 +187,7 @@ public class PlayerController : MonoBehaviour
         hook.transform.position = this.transform.position;
         hook.canHit = false;
         hook.SetTrailActive(false);
-        hook.GetComponent<SpriteRenderer>().enabled = false;
+        hook.Catch();
     }
 
     //Move this out of the class. Or move dashing out of the class.
@@ -293,7 +288,6 @@ public class PlayerController : MonoBehaviour
             return null;
         }
 
-      
     }
 
     private Transform FindClosestTarget(RaycastHit2D[] targets)
@@ -337,9 +331,9 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (other.GetComponent<Dashable>() && target == other.GetComponent<Transform>())
+        if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
             GrabHook();
         }
