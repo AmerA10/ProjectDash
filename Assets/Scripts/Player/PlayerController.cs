@@ -319,10 +319,11 @@ public class PlayerController : MonoBehaviour
         {
             if(playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
             {
-                GrabHook();
+                
                 dashStrat.TryDash(this.transform, dashDirection);
-
+                GrabHook();
             }
+            
 
         }
         if (collision.tag.Equals("DeathZone"))
@@ -331,6 +332,14 @@ public class PlayerController : MonoBehaviour
             Die();
 
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Dashable>() && target == other.GetComponent<Transform>())
+        {
+            GrabHook();
+        }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
