@@ -139,6 +139,7 @@ public class PlayerController : MonoBehaviour
         if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) { ChangeState(State.SHOOT_RIGHT); }
         else if (playerState != State.SHOOT_LEFT) { ChangeState(State.SHOOT_LEFT); }
 
+
         rb.gravityScale = 0f;
 
         hook.ShootHookTo(target);
@@ -160,11 +161,13 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator StartDashing()
     {
+        
         canDash = false;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
         dashStrat.TryDefaultDash(this.transform, dashDirection);
-        playerAnimation.DashAnim(rb.velocity);
+
+       // playerAnimation.DashAnim(rb.velocity);
         StartCoroutine(FinishDashing());
     }
 
@@ -238,6 +241,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 GetDashDirection(Transform target)
     {
         Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
+
+        Debug.Log(dashDirection);
         DrawnAngle(target, dashDirection);
         return dashDirection;
     }
