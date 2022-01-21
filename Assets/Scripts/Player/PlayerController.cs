@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
             //TurnTime(true);
         }
 
+        if (Input.GetKeyDown(KeyCode.P)) Die();
     }
 
     private void AdjustPlayerState()

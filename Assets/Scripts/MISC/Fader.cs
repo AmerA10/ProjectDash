@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Fader : MonoBehaviour
 {
-    [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] Image fadePanel;
     [SerializeField] Coroutine currentActiveFade = null;
+
+    Color black, transparent;
     void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
+        black = new Color(0, 0, 0, 255);
+        transparent = new Color(0, 0, 0, 0);
     }
     void Start()
     {
@@ -17,7 +21,7 @@ public class Fader : MonoBehaviour
 
     public void FadeOutImmediate()
     {
-        canvasGroup.alpha = 1;
+        fadePanel.color = black;
     }
 
     public IEnumerator FadeOutIn()
@@ -53,13 +57,15 @@ public class Fader : MonoBehaviour
     private IEnumerator FadeRoutine(float target, float time)
     {
         Debug.Log("Staring fade");
-        while (!Mathf.Approximately(canvasGroup.alpha, target)) //alpha is not 1, update it until it is 
+        float alpha = fadePanel.color.a;
+        while (!Mathf.Approximately(alpha, target)) //alpha is not 1, update it until it is 
         {
-            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, target, Time.deltaTime / time);
+            alpha = Mathf.MoveTowards(alpha, target, Time.deltaTime / time);
+            fadePanel.color = new Color(0, 0, 0, alpha);
             yield return null; //null = 1 frame;
                                //moveAlpha until it is 1 by the frame and time
         }
-        
+
     }
 
     // Start is called before the first frame update
