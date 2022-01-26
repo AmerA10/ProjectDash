@@ -15,17 +15,32 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimation playerAnimation;
     private PlayerInput playerInput;
 
+
     public Action OnDeath;
 
-    [Header("Moving Left and Right")]
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float airMoveSpeed = 20f;
     private bool isRight = true;
+
+    [Header("Acceleration On Ground")]
+    [SerializeField] private float maxSpeed = 8f;
+    [Tooltip("How long it takes for the player, to reach maximum speed")]
+    [SerializeField] private float zeroToMaxTime = 1.0f;
+    [SerializeField] private float accelRatePerSec;
+    [SerializeField] private float rightVelocity;
+    [SerializeField] private float decelerationRate = 5f;
+
+    [Header("Acceleration In Air")]
+    [Tooltip("How long it takes for the player, to reach maximum speed in the air")]
+    [SerializeField] private float airZeroToMaxTime = 1.0f;
+    [SerializeField] private float airAccelRatePerSec;
+    [SerializeField] private float airDecelerationRate = 5f;
+
 
     [Header("Falling")]
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowFallMultiplier = 2f;
     [SerializeField] private float airLerp = 5f;
+    [SerializeField] private float maximumFallSpeed = -30f;
+    private bool isHoldingJump = false;
 
     [Header("Ground Collision")]
     [SerializeField] private bool isGrounded = false;
@@ -34,7 +49,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsGround;
 
 
-    [Header("Dash Stuff")]
+    [Header("Dash Stuff")]    
     [SerializeField] private float dashRadius = 5f;
     [SerializeField] LayerMask whatIsDashable;
     [SerializeField] private Transform target;
@@ -49,6 +64,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private bool isJumping = false;
 
     public Action<bool> TimeAction;
 
@@ -67,10 +83,14 @@ public class PlayerController : MonoBehaviour
         ChangeState(State.IDLE_RIGHT);
         hook.OnHookHit += Dash;
         GrabHook();
+        accelRatePerSec = maxSpeed / zeroToMaxTime;
+        airAccelRatePerSec = maxSpeed / airZeroToMaxTime;
+        rightVelocity = 0f;
     }
 
     void Update()
     {
+
         CheckForGround();
 
         if (canDash) target = CheckForDashTarget();
@@ -128,11 +148,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Jump()
-    {
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        ChangeState(State.JUMPING);
-    }
+ 
 
     public void WaitTillHook()
     {
@@ -195,14 +211,29 @@ public class PlayerController : MonoBehaviour
     }
 
     //Move this out of the class. Or move dashing out of the class.
+
+    #region Movement
     public void HandleMovementInput(float horizontalFloat)
     {
-        isRight = horizontalFloat > 0 ? true : false;
+        isRight = horizontalFloat > 0 ? true : horizontalFloat < 0 ? false : horizontalFloat == 0? isRight: isRight;
         if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
         if (isGrounded)
         {
-            // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
-            rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
+            if(horizontalFloat != 0)
+            {
+                // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
+                rightVelocity += horizontalFloat * accelRatePerSec * Time.deltaTime;
+                rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
+               
+                //rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
+            }
+            else
+            {
+                rightVelocity -= (isRight ? decelerationRate : -decelerationRate ) * Time.deltaTime;
+                rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
+               
+            }
+            rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
         }
 
         else if (playerState == State.FALLING || playerState == State.JUMPING)
@@ -211,23 +242,41 @@ public class PlayerController : MonoBehaviour
 
             if (horizontalFloat != 0)
             {
-                rb.velocity = new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y);
+                // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
+                rightVelocity += horizontalFloat * airAccelRatePerSec * Time.deltaTime;
+                rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
+
+                //rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
             }
-
-            //Player is falling while moving
-
             else
             {
-                rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y), airLerp * Time.deltaTime);
-            }
+                rightVelocity -= (isRight ? airDecelerationRate : -airDecelerationRate) * Time.deltaTime;
+                rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
 
+            }
+            rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
+
+            /*            if (horizontalFloat != 0)
+                        {
+                            rb.velocity = new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y);
+                        }
+
+                        //Player is falling while moving
+
+                        else
+                        {
+                            rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y), airLerp * Time.deltaTime);
+                        }
+            */
+
+            //The - 1 is there to account for the existing gravity
             if (rb.velocity.y < 0)
             {
-                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
-            else if (rb.velocity.y > 0)
+            else if (rb.velocity.y > 0 && !isHoldingJump)
             {
-                rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.fixedDeltaTime;
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.deltaTime;
             }
         }
         else
@@ -236,6 +285,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Jump()
+    {
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        isHoldingJump = true;
+        ChangeState(State.JUMPING);
+    }
+
+    public void Fall()
+    {
+        if(playerState == State.JUMPING)
+        {
+            //Do the fall stuff here
+            isHoldingJump = false;
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier ) * Time.fixedDeltaTime;
+
+        }
+    }
+
+    #endregion
     public bool GetIsGrounded() { return isGrounded; }
     public State GetPlayerState() { return playerState; }
 

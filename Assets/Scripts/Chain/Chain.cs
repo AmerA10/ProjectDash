@@ -27,7 +27,7 @@ public class Chain : MonoBehaviour
 
     public void Catch()
     {
-        hookShotEnd.GetComponent<SpriteRenderer>().enabled = false;
+
     }
 
     public void ShootHookTo(Transform target)

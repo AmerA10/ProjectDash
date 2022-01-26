@@ -10,6 +10,7 @@ public class PlayerInput : MonoBehaviour
     private PlayerController playerController;
     private bool dashInput;
     private IInteractable interactable;
+    private bool holdingJump;
 
     void Awake()
     {
@@ -30,6 +31,8 @@ public class PlayerInput : MonoBehaviour
             Debug.Log("You pressed l");
         }
         dashInput = Input.GetKeyDown(KeyCode.Space);
+
+
         Debug.Log("dashInput: " + dashInput);
         if(dashInput)
         {
@@ -39,6 +42,10 @@ public class PlayerInput : MonoBehaviour
                 playerController.AttemptJumpOrDash();
             }
             
+        }
+        if (Input.GetKeyUp(KeyCode.Space)) { 
+       
+            playerController.Fall();
         }
     }
 
