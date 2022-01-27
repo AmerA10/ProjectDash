@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimation playerAnimation;
     private PlayerInput playerInput;
 
-
     public Action OnDeath;
 
     private bool isRight = true;
@@ -33,7 +32,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airZeroToMaxTime = 1.0f;
     [SerializeField] private float airAccelRatePerSec;
     [SerializeField] private float airDecelerationRate = 5f;
-
 
     [Header("Falling")]
     [SerializeField] private float fallMultiplier = 2.5f;
@@ -65,6 +63,10 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Stuff")]
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private bool isJumping = false;
+    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float coyeteTimeCounter;
+    [SerializeField] private float jumpBufferLength = 0.1f;
+    [SerializeField] private float jumpBufferCounter;
 
     public Action<bool> TimeAction;
 
@@ -92,7 +94,12 @@ public class PlayerController : MonoBehaviour
     {
 
         CheckForGround();
-
+        jumpBufferCounter -= Time.deltaTime;
+        if(isGrounded && jumpBufferCounter > 0)
+        {
+            Debug.Log("BUFFER");
+            Jump();
+        }
         if (canDash) target = CheckForDashTarget();
         AdjustPlayerState();
 
@@ -134,11 +141,17 @@ public class PlayerController : MonoBehaviour
     }
 
     public void AttemptJumpOrDash()
-    {
-        if (target == null && !isGrounded) return;
-
-        if (target == null && isGrounded)
+    { 
+        if (target == null && playerState == State.FALLING)
         {
+            Debug.Log("Stuff");
+            jumpBufferCounter = jumpBufferLength;
+            
+        }
+
+        if ((target == null && isGrounded) || (target == null && coyeteTimeCounter > 0f))
+        {
+            Debug.Log("jumping");
             Jump();
         }
         else if(canDash)
@@ -148,7 +161,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
- 
 
     public void WaitTillHook()
     {
@@ -287,6 +299,8 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
+        jumpBufferCounter = 0f;
+        rb.velocity = new Vector2(rb.velocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         isHoldingJump = true;
         ChangeState(State.JUMPING);
@@ -298,12 +312,13 @@ public class PlayerController : MonoBehaviour
         {
             //Do the fall stuff here
             isHoldingJump = false;
+            coyeteTimeCounter = 0f;
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier ) * Time.fixedDeltaTime;
 
         }
     }
-
     #endregion
+
     public bool GetIsGrounded() { return isGrounded; }
     public State GetPlayerState() { return playerState; }
 
@@ -323,18 +338,20 @@ public class PlayerController : MonoBehaviour
         Debug.DrawRay(this.transform.position, Vector2.down * checkGroundDistance, Color.yellow);
         if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
-            if (playerState == State.FALLING) return;
+           
             if (playerState == State.JUMPING) return;
 
-          
-            if(rb.velocity.y < 0) ChangeState(State.FALLING);
+            if (rb.velocity.y < 0) ChangeState(State.FALLING);
+            if (playerState == State.FALLING)
+            {
+                coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, 0f);
+            }
         }                   
         else if (isGrounded)
         {
             if (playerState == State.FALLING)
             {
-                
-
+                coyeteTimeCounter = coyoteTime;
                 ChangeState(State.IDLE_RIGHT);
             }
         }
@@ -359,6 +376,7 @@ public class PlayerController : MonoBehaviour
         {
             TimeAction?.Invoke(false);
             //TurnTime(false);
+            canDash = false;
             return null;
         }
 
