@@ -254,6 +254,10 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
+      propertyPath: maximumFallSpeed
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: coyeteTimeCounter
       value: 0
       objectReference: {fileID: 0}

@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float lowFallMultiplier = 2f;
     [SerializeField] private float airLerp = 5f;
     [SerializeField] private float maximumFallSpeed = -30f;
+    private Vector2 minimFallingSpeedVector;
     private bool isHoldingJump = false;
 
     [Header("Ground Collision")]
@@ -79,9 +80,12 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerInput = GetComponent<PlayerInput>();
+
+        minimFallingSpeedVector = new Vector2(rb.velocity.x, maximumFallSpeed);
         ChangeState(State.IDLE_RIGHT);
         hook.OnHookHit += Dash;
         GrabHook();
@@ -92,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        jumpBufferCounter -= Time.deltaTime;
+        jumpBufferCounter = Mathf.Max(jumpBufferCounter - Time.deltaTime, -1f);
         CheckForGround();
         if(!isGrounded)
         {
@@ -117,8 +121,11 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded && jumpBufferCounter > 0)
         {
-            Debug.Log("BUFFER");
             Jump();
+        }
+        if(playerState == State.FALLING)
+        {
+            rb.velocity = Vector2.Max(rb.velocity, minimFallingSpeedVector);
         }
     }
 
