@@ -92,14 +92,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-        CheckForGround();
         jumpBufferCounter -= Time.deltaTime;
-        if(isGrounded && jumpBufferCounter > 0)
+        CheckForGround();
+        if(!isGrounded)
         {
-            Debug.Log("BUFFER");
-            Jump();
+            coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, -1f);
         }
+
         if (canDash) target = CheckForDashTarget();
         AdjustPlayerState();
 
@@ -112,6 +111,15 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.P)) Die();
+    }
+    //Putting this here might eliminate a race conidtion between pressing the space button the InputScript and jumping int his script
+    private void LateUpdate()
+    {
+        if (isGrounded && jumpBufferCounter > 0)
+        {
+            Debug.Log("BUFFER");
+            Jump();
+        }
     }
 
     private void AdjustPlayerState()
@@ -149,7 +157,7 @@ public class PlayerController : MonoBehaviour
             
         }
 
-        if ((target == null && isGrounded) || (target == null && coyeteTimeCounter > 0f))
+        if ((target == null && isGrounded) || (target == null && coyeteTimeCounter > 0f && jumpBufferCounter > 0))
         {
             Debug.Log("jumping");
             Jump();
@@ -282,12 +290,13 @@ public class PlayerController : MonoBehaviour
             */
 
             //The - 1 is there to account for the existing gravity
-            if (rb.velocity.y < 0)
+            if (rb.velocity.y <= 0)
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
             else if (rb.velocity.y > 0 && !isHoldingJump)
             {
+                Debug.Log("LowFall Multiplier");
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.deltaTime;
             }
         }
@@ -300,6 +309,7 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         jumpBufferCounter = 0f;
+        coyeteTimeCounter = 0f;
         rb.velocity = new Vector2(rb.velocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         isHoldingJump = true;
@@ -308,14 +318,16 @@ public class PlayerController : MonoBehaviour
 
     public void Fall()
     {
-        if(playerState == State.JUMPING)
+        if(playerState == State.JUMPING || playerState == State.FALLING)
         {
             //Do the fall stuff here
-            isHoldingJump = false;
             coyeteTimeCounter = 0f;
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier ) * Time.fixedDeltaTime;
-
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
         }
+    }
+    public void SetIsHoldingJump(bool isHoldingJump)
+    {
+        this.isHoldingJump = isHoldingJump; 
     }
     #endregion
 
@@ -334,7 +346,8 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForGround()
     {
-        isGrounded = Physics2D.Raycast(groundCheckTransform.position, Vector2.down, checkGroundDistance, whatIsGround);
+      // isGrounded = Physics2D.Raycast(groundCheckTransform.position, Vector2.down, checkGroundDistance, whatIsGround);
+        isGrounded = Physics2D.OverlapCircle(groundCheckTransform.position, checkGroundDistance, whatIsGround);
         Debug.DrawRay(this.transform.position, Vector2.down * checkGroundDistance, Color.yellow);
         if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
@@ -342,10 +355,9 @@ public class PlayerController : MonoBehaviour
             if (playerState == State.JUMPING) return;
 
             if (rb.velocity.y < 0) ChangeState(State.FALLING);
-            if (playerState == State.FALLING)
-            {
-                coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, 0f);
-            }
+
+            
+            
         }                   
         else if (isGrounded)
         {
@@ -449,7 +461,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(this.transform.position, this.transform.position + (Vector3.down) * checkGroundDistance);
+        Gizmos.DrawWireSphere(groundCheckTransform.position, checkGroundDistance);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(this.transform.position, dashRadius);
         Gizmos.color = Color.green;

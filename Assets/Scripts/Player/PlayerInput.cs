@@ -43,10 +43,11 @@ public class PlayerInput : MonoBehaviour
             }
             
         }
-        if (Input.GetKeyUp(KeyCode.Space)) { 
-       
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
             playerController.Fall();
         }
+        playerController.SetIsHoldingJump(Input.GetKey(KeyCode.Space));
     }
 
     private void FixedUpdate()
