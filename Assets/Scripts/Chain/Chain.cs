@@ -15,9 +15,10 @@ public class Chain : MonoBehaviour
     [SerializeField] private float hookShotRadius = 1f;
     [SerializeField] LayerMask whatIsDashable;
     [SerializeField] private ChainTrail trail;
+    [SerializeField] private float distanceToHit = 1f;
     public Action OnHookHit;
 
-    // Start is called before the first frame update
+    // Start is called before the first frame updates
     void Start()
     {
         isHit = false;
@@ -30,9 +31,9 @@ public class Chain : MonoBehaviour
 
     }
 
-    public void ShootHookTo(Transform target)
+    public IEnumerator ShootHookTo(Transform target)
     {
-        hookShotEnd.GetComponent<SpriteRenderer>().enabled = true;
+       
         SetTrailActive(true);
         this.transform.parent = null;
         Vector2 directionToTarget = target.position - this.transform.position;
@@ -40,15 +41,27 @@ public class Chain : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         this.target = target;
         isHit = false;
-        StartCoroutine(MoveToTarget());
+        yield return StartCoroutine(MoveToTarget());
         //EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
         //EventManager.Instance.TriggerCameraEffect(CameraEffect.DASH);
     }
     IEnumerator MoveToTarget()
     {
-        RaycastHit2D hit;
+        //RaycastHit2D hit;
 
-        while (!isHit)
+        Debug.Log("GETTIONG tO : " + distanceToHit * distanceToHit);
+        while ((target.position - hookShotEnd.position).sqrMagnitude > distanceToHit * distanceToHit) {
+           
+            Debug.Log((target.position - hookShotEnd.position).sqrMagnitude);
+            transform.position = Vector2.MoveTowards(this.transform.position, target.position, delta * Time.deltaTime);
+            yield return null;
+        }
+
+      
+        OnHookHit();
+
+
+        /*while (!isHit)
         {
             hit = Physics2D.CircleCast(hookShotEnd.position, hookShotRadius, Vector2.zero, 0f, whatIsDashable);
             transform.position = Vector2.MoveTowards(this.transform.position, target.position, delta * Time.deltaTime);
@@ -60,7 +73,7 @@ public class Chain : MonoBehaviour
 
             yield return null;
 
-        }
+        }*/
 
     }
 

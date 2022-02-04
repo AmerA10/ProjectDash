@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Chain hook;
     [SerializeField] private Dashable dashStrat;
     [SerializeField] private bool canDash = true;
+   
     private bool isHookCaught = false;
     private Vector2 dashDirection;
 
@@ -103,7 +104,16 @@ public class PlayerController : MonoBehaviour
             coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, -1f);
         }
 
-        if (canDash) target = CheckForDashTarget();
+        target = CheckForDashTarget();
+        if (target != null && (playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
+        {
+            Debug.Log("Can dash");
+            canDash = true;
+        }
+        else
+        {
+            canDash = false;
+        }
         AdjustPlayerState();
 
         if (target != null && canDash)
@@ -111,7 +121,7 @@ public class PlayerController : MonoBehaviour
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
             TimeAction?.Invoke(true);
-            //TurnTime(true);
+          
         }
 
         if (Input.GetKeyDown(KeyCode.P)) Die();
@@ -159,40 +169,43 @@ public class PlayerController : MonoBehaviour
     { 
         if (target == null && playerState == State.FALLING)
         {
-            Debug.Log("Stuff");
+       
             jumpBufferCounter = jumpBufferLength;
             
         }
 
         if ((target == null && isGrounded) || (target == null && coyeteTimeCounter > 0f && jumpBufferCounter > 0))
         {
-            Debug.Log("jumping");
+         
             Jump();
         }
         else if(canDash)
         {
+            
             GrabHook();
-            WaitTillHook();
+            StartCoroutine(WaitTillHook());
         }
     }
 
 
-    public void WaitTillHook()
+    public IEnumerator WaitTillHook()
     {
-        hook.GetComponent<SpriteRenderer>().enabled = false;
+        hook.GetComponent<SpriteRenderer>().enabled = true;
         if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) { ChangeState(State.SHOOT_RIGHT); }
         else if (playerState != State.SHOOT_LEFT) { ChangeState(State.SHOOT_LEFT); }
 
 
         rb.gravityScale = 0f;
+        rb.velocity = Vector2.zero;
 
-        hook.ShootHookTo(target);
+        yield return StartCoroutine(hook.ShootHookTo(target));
         rb.velocity = Vector2.zero;
         hook.canHit = true;
     }
 
     public void Dash()
     {
+ 
  
         TimeAction?.Invoke(false);
         //TurnTime(false);
@@ -210,22 +223,21 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
         dashStrat.TryDefaultDash(this.transform, dashDirection);
-
-       // playerAnimation.DashAnim(rb.velocity);
-        StartCoroutine(FinishDashing());
+        yield return new WaitForSeconds(dashTime);
+        // playerAnimation.DashAnim(rb.velocity);
+        canDash = true;
+        FinishDashing();
     }
 
-    IEnumerator FinishDashing()
+    private void FinishDashing()
     {
-       
-        yield return new WaitForSeconds(dashTime);
-        canDash = true;
         if (rb.velocity.y > 0f) ChangeState(State.JUMPING);
         else ChangeState(State.FALLING);
         
-        rb.drag = 2f;
+        rb.drag = 1f;
         rb.gravityScale = 1f;
         playerAnimation.EndDashAnim();
+        
     }
 
     public void GrabHook()
@@ -283,27 +295,13 @@ public class PlayerController : MonoBehaviour
             }
             rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
 
-            /*            if (horizontalFloat != 0)
-                        {
-                            rb.velocity = new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y);
-                        }
-
-                        //Player is falling while moving
-
-                        else
-                        {
-                            rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(horizontalFloat * airMoveSpeed, rb.velocity.y), airLerp * Time.deltaTime);
-                        }
-            */
-
-            //The - 1 is there to account for the existing gravity
             if (rb.velocity.y <= 0)
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
             else if (rb.velocity.y > 0 && !isHoldingJump)
             {
-                Debug.Log("LowFall Multiplier");
+               
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.deltaTime;
             }
         }
@@ -337,7 +335,6 @@ public class PlayerController : MonoBehaviour
         this.isHoldingJump = isHoldingJump; 
     }
     #endregion
-
     public bool GetIsGrounded() { return isGrounded; }
     public State GetPlayerState() { return playerState; }
 
@@ -345,7 +342,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 dashDirection = (target.transform.position - this.transform.position).normalized;
 
-        Debug.Log(dashDirection);
         DrawnAngle(target, dashDirection);
         return dashDirection;
     }
@@ -383,13 +379,13 @@ public class PlayerController : MonoBehaviour
 
         if (colliders.Length == 1)
         {
-              
+           
                 return colliders[0].transform;
         }
         else if (colliders.Length > 1)
         {
-             
-                return FindClosestTarget(colliders);
+            
+            return FindClosestTarget(colliders);
         }
         else
         {
