@@ -280,7 +280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: dashTime
-      value: 0.2
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: maxSpeed
@@ -328,7 +328,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: airDecelerationRate
-      value: 100
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: checkGroundDistance
@@ -662,7 +662,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6089335610939871936, guid: 6efaafd1afac7c14ebeec888eef8a86a, type: 3}
       propertyPath: m_Size.x
-      value: 143.81711
+      value: 144.03117
       objectReference: {fileID: 0}
     - target: {fileID: 6089335610939871936, guid: 6efaafd1afac7c14ebeec888eef8a86a, type: 3}
       propertyPath: m_Size.y
@@ -670,7 +670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6089335610939871936, guid: 6efaafd1afac7c14ebeec888eef8a86a, type: 3}
       propertyPath: m_Offset.x
-      value: -0.2353363
+      value: -0.12828827
       objectReference: {fileID: 0}
     - target: {fileID: 6089335610939871936, guid: 6efaafd1afac7c14ebeec888eef8a86a, type: 3}
       propertyPath: m_Offset.y
