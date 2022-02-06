@@ -33,7 +33,7 @@ public class PlayerInput : MonoBehaviour
         dashInput = Input.GetKeyDown(KeyCode.Space);
 
 
-        Debug.Log("dashInput: " + dashInput);
+        //Debug.Log("dashInput: " + dashInput);
         if(dashInput)
         {
             if (interactable != null && interactable.IsInteractable()) interactable.HandleInteraction();

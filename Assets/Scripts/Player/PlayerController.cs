@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
         target = CheckForDashTarget();
         if (target != null && (playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
         {
-            Debug.Log("Can dash");
+            
             canDash = true;
         }
         else
@@ -191,8 +191,13 @@ public class PlayerController : MonoBehaviour
     public IEnumerator WaitTillHook()
     {
         hook.GetComponent<SpriteRenderer>().enabled = true;
-        if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) { ChangeState(State.SHOOT_RIGHT); }
-        else if (playerState != State.SHOOT_LEFT) { ChangeState(State.SHOOT_LEFT); }
+        if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) {
+            isRight = true;
+            ChangeState(State.SHOOT_RIGHT); }
+        else if (playerState != State.SHOOT_LEFT) {
+            isRight = false;
+            ChangeState(State.SHOOT_LEFT); 
+        }
 
 
         rb.gravityScale = 0f;
@@ -218,11 +223,15 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator StartDashing()
     {
-        
+       
         canDash = false;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
+  
         dashStrat.TryDefaultDash(this.transform, dashDirection);
+        
+
+
         yield return new WaitForSeconds(dashTime);
         // playerAnimation.DashAnim(rb.velocity);
         canDash = true;
@@ -231,8 +240,9 @@ public class PlayerController : MonoBehaviour
 
     private void FinishDashing()
     {
+        rightVelocity = rb.velocity.x;
         if (rb.velocity.y > 0f) ChangeState(State.JUMPING);
-        else ChangeState(State.FALLING);
+       else ChangeState(State.FALLING);
         
         rb.drag = 1f;
         rb.gravityScale = 1f;
@@ -254,6 +264,7 @@ public class PlayerController : MonoBehaviour
     #region Movement
     public void HandleMovementInput(float horizontalFloat)
     {
+    
         isRight = horizontalFloat > 0 ? true : horizontalFloat < 0 ? false : horizontalFloat == 0? isRight: isRight;
         if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
         if (isGrounded)
@@ -270,6 +281,7 @@ public class PlayerController : MonoBehaviour
             {
                 rightVelocity -= (isRight ? decelerationRate : -decelerationRate ) * Time.deltaTime;
                 rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
+               
                
             }
             rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
@@ -289,10 +301,11 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                rightVelocity -= (isRight ? airDecelerationRate : -airDecelerationRate) * Time.deltaTime;
+                rightVelocity -= (isRight ? airDecelerationRate : -airDecelerationRate) * Time.deltaTime;     
                 rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
-
+              
             }
+        
             rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
 
             if (rb.velocity.y <= 0)

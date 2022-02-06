@@ -49,10 +49,10 @@ public class Chain : MonoBehaviour
     {
         //RaycastHit2D hit;
 
-        Debug.Log("GETTIONG tO : " + distanceToHit * distanceToHit);
+        
         while ((target.position - hookShotEnd.position).sqrMagnitude > distanceToHit * distanceToHit) {
            
-            Debug.Log((target.position - hookShotEnd.position).sqrMagnitude);
+          
             transform.position = Vector2.MoveTowards(this.transform.position, target.position, delta * Time.deltaTime);
             yield return null;
         }
