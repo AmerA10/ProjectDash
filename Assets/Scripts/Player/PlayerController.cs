@@ -23,15 +23,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxSpeed = 8f;
     [Tooltip("How long it takes for the player, to reach maximum speed")]
     [SerializeField] private float zeroToMaxTime = 1.0f;
-    [SerializeField] private float accelRatePerSec;
-    [SerializeField] private float rightVelocity;
+    [Tooltip("How quickly the player decelerates, the higher the number, the more quickly the player stops moving")]
     [SerializeField] private float decelerationRate = 5f;
+
+    private float accelRatePerSec;
+    private float rightVelocity;
 
     [Header("Acceleration In Air")]
     [Tooltip("How long it takes for the player, to reach maximum speed in the air")]
     [SerializeField] private float airZeroToMaxTime = 1.0f;
-    [SerializeField] private float airAccelRatePerSec;
+    [Tooltip("How quickly the player decelerates in the air, the higher the number, the more quickly the player stops moving in the air")]
     [SerializeField] private float airDecelerationRate = 5f;
+    private float airAccelRatePerSec;
+    
 
     [Header("Falling")]
     [SerializeField] private float fallMultiplier = 2.5f;
@@ -293,11 +297,11 @@ public class PlayerController : MonoBehaviour
 
             if (horizontalFloat != 0)
             {
-                // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
+                
                 rightVelocity += horizontalFloat * airAccelRatePerSec * Time.deltaTime;
                 rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
 
-                //rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
+                
             }
             else
             {

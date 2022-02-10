@@ -263,6 +263,71 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f5a5fd2ac749644781ef5f502288f68, type: 3}
+--- !u!1001 &612659971
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1672669942762797085, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 24.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 1672669942762797085, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040008, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_Name
+      value: Teleport
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909783995429040010, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f6fa5476753d95342a46835a3d3d22e8, type: 3}
 --- !u!1001 &700086895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -284,7 +349,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: maxSpeed
-      value: 14
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
+      propertyPath: jumpForce
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: m_Enabled
@@ -304,11 +373,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: fallMultiplier
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: airZeroToMaxTime
-      value: 0.3
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: decelerationRate
@@ -320,7 +389,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: maximumFallSpeed
-      value: -40
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: coyeteTimeCounter
@@ -328,7 +397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: airDecelerationRate
-      value: 30
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1867250974472447592, guid: e0059d7292fb4f840b4f155b04e82e43, type: 3}
       propertyPath: checkGroundDistance
