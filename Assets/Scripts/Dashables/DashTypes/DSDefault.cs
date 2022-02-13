@@ -12,7 +12,7 @@ public class DSDefault : IDashable
         dashSpeed = speed;
     }
     public DSDefault() {
-        dashSpeed = 85;
+        dashSpeed = 100;
     }
 
     public void HandleDash(Transform player, Vector2 dashDirection, float dashRatio)

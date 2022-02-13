@@ -208,14 +208,10 @@ public class PlayerController : MonoBehaviour
             ChangeState(State.SHOOT_LEFT); 
         }
 
-
-    
-       
-
         yield return StartCoroutine(hook.ShootHookTo(target));
         distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
         dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), 0.7f);
-        Debug.Log("From max distance: " + dashRatio);
+   
         CheckMinimumHookDistance();
         rb.velocity = Vector2.zero;
         hook.canHit = true;
@@ -224,7 +220,7 @@ public class PlayerController : MonoBehaviour
     private void CheckMinimumHookDistance()
     {
         if (target == null) return;
-        Debug.Log("DIstance to player:  " + distanceFromTargetOnDash);
+ 
         if(distanceFromTargetOnDash < minimumHookDistance * minimumHookDistance)
         {
             dashStrat.TryDash(this.transform, dashDirection, dashRatio);
@@ -436,11 +432,40 @@ public class PlayerController : MonoBehaviour
         Transform closest = targets[0].transform;
         foreach (RaycastHit2D hit in targets)
         {
-            if ((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
+            
+            if ((hit.transform.position - this.transform.position).x >= 0 && isRight)
             {
-                closest = hit.transform;
+                if((closest.position - this.transform.position).x >= 0)
+                {
+                    if ((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
+                    {
+                        closest = hit.transform;
+                    }
+                }
+                else
+                {
+                    closest = hit.transform;
+                }
+                
             }
+            if ((hit.transform.position - this.transform.position).x < 0 && !isRight)
+            {
+                if ((closest.position - this.transform.position).x < 0)
+                {
+                    if ((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
+                    {
+                        closest = hit.transform;
+                    }
+                }
+                else
+                {
+                    closest = hit.transform;
+                }
+
+            }
+
         }
+        Debug.Log("Closest is: " + (closest.position - this.transform.position).x);
         return closest;
     }
     private void ChangeState(State state)
