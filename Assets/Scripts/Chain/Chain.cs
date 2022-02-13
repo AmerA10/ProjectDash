@@ -49,10 +49,17 @@ public class Chain : MonoBehaviour
     {
         //RaycastHit2D hit;
 
-        
+        Vector3 startingPos = this.transform.position;
         while ((target.position - hookShotEnd.position).sqrMagnitude >= distanceToHit * distanceToHit) {
            
-          
+            //if the distance between where the hook and starting position is larger than the distance between the target 
+            //and the startingPos then the hook is past it and therefore already reached it
+            if((this.transform.position - startingPos).sqrMagnitude > (target.position - startingPos).sqrMagnitude)
+            {
+                Debug.Log("Hook gone past");
+                break;
+            }
+            
             transform.position = Vector2.MoveTowards(this.transform.position, target.position, delta * Time.deltaTime);
             yield return null;
         }

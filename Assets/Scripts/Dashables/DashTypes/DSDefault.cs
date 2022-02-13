@@ -19,7 +19,7 @@ public class DSDefault : IDashable
     {
        
         player.GetComponent<Rigidbody2D>().velocity = dashDirection * (dashSpeed * dashRatio);
-        Debug.Log("x vel from dash is: " + player.GetComponent<Rigidbody2D>().velocity.x);
+      
     }
 
 }

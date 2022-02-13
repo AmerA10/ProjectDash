@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
         target = CheckForDashTarget();
         if (target != null && (playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
         {
-            
+
             canDash = true;
         }
         else
@@ -212,6 +212,7 @@ public class PlayerController : MonoBehaviour
 
         yield return StartCoroutine(hook.ShootHookTo(target));
         distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
+        Debug.Log("Dsitance from Target Dash" + distanceFromTargetOnDash + " Minumum Hook Distance squared" + (minimumHookDistance * minimumHookDistance));
         dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), minDashRation);
    
         CheckMinimumHookDistance();
@@ -225,9 +226,8 @@ public class PlayerController : MonoBehaviour
  
         if(distanceFromTargetOnDash < minimumHookDistance * minimumHookDistance)
         {
-            dashStrat.TryDash(this.transform, dashDirection, dashRatio);
             GrabHook();
-            
+            dashStrat.TryDash(this.transform, dashDirection, dashRatio);
 
         }
     }
@@ -485,9 +485,9 @@ public class PlayerController : MonoBehaviour
         {
             if(playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
             {
-                
-                dashStrat.TryDash(this.transform, dashDirection, dashRatio);
                 GrabHook();
+                dashStrat.TryDash(this.transform, dashDirection, dashRatio);
+                
             }
             
 
