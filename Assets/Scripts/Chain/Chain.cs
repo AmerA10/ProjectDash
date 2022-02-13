@@ -50,7 +50,7 @@ public class Chain : MonoBehaviour
         //RaycastHit2D hit;
 
         
-        while ((target.position - hookShotEnd.position).sqrMagnitude > distanceToHit * distanceToHit) {
+        while ((target.position - hookShotEnd.position).sqrMagnitude >= distanceToHit * distanceToHit) {
            
           
             transform.position = Vector2.MoveTowards(this.transform.position, target.position, delta * Time.deltaTime);

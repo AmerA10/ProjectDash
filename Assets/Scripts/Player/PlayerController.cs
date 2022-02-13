@@ -63,8 +63,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Dashable dashStrat;
     [SerializeField] private bool canDash = true;
     [SerializeField] private float minimumHookDistance = 0.11f;
+    [SerializeField] private float minDashRation = 0.8f;
     private float distanceFromTargetOnDash;
-    [SerializeField] private float dashRatio;
+    private float dashRatio;
    
     private bool isHookCaught = false;
     private Vector2 dashDirection;
@@ -88,7 +89,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerInput = GetComponent<PlayerInput>();
@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
             coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, -1f);
         }
 
+        if((playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
         target = CheckForDashTarget();
         if (target != null && (playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
         {
@@ -199,6 +200,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.gravityScale = 0f;
         rb.velocity = Vector2.zero;
+
         hook.GetComponent<SpriteRenderer>().enabled = true;
         if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) {
             isRight = true;
@@ -210,10 +212,10 @@ public class PlayerController : MonoBehaviour
 
         yield return StartCoroutine(hook.ShootHookTo(target));
         distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
-        dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), 0.7f);
+        dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), minDashRation);
    
         CheckMinimumHookDistance();
-        rb.velocity = Vector2.zero;
+ 
         hook.canHit = true;
     }
 
@@ -497,22 +499,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-/*    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
-        {
-            GrabHook();
-        }
-
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
-        {
-            GrabHook();
-        }
-    }
-*/
     private void DrawnAngle(Transform target, Vector2 dir)
     {
 
