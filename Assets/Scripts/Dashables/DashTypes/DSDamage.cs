@@ -13,7 +13,7 @@ public class DSDamage : IDashable
         this.health = health;
     }
     
-    public void HandleDash(Transform player, Vector2 dashDir)
+    public void HandleDash(Transform player, Vector2 dashDir, float dashRatio)
     {
         health.TakeDamage(1);
     }

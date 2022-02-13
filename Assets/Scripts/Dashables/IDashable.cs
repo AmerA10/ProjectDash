@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDashable 
 {
-    public void HandleDash(Transform player, Vector2 direction);
+    public void HandleDash(Transform player, Vector2 direction, float dashRatio);
 
     
 }

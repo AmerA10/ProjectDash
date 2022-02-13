@@ -10,7 +10,7 @@ public class DSTrigger : IDashable
         inter = interactable;
     }
 
-    public void HandleDash(Transform player, Vector2 direction)
+    public void HandleDash(Transform player, Vector2 direction, float dashRatio)
     {
         if (inter == null)
         {

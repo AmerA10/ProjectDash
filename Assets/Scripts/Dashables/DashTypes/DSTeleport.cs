@@ -13,7 +13,7 @@ public class DSTeleport : IDashable
 
     }
 
-    public void HandleDash(Transform player, Vector2 dashDir)
+    public void HandleDash(Transform player, Vector2 dashDir, float dashRatio)
     {
 
         player.transform.position = teleportExit.position;

@@ -13,17 +13,17 @@ public class Dashable : MonoBehaviour
     public IDashable defaultDash;
 
 
-    public void TryDash(Transform player, Vector2 dashDirdirection)
+    public void TryDash(Transform player, Vector2 dashDirdirection, float dashRatio)
     {
-        dashType?.HandleDash(player,  dashDirdirection);
+        dashType?.HandleDash(player,  dashDirdirection, dashRatio);
         player.GetComponent<PlayerController>().GrabHook();
      
 
     }
-    public void TryDefaultDash(Transform player, Vector2 dashDirdirection)
+    public void TryDefaultDash(Transform player, Vector2 dashDirdirection, float dashRatio)
     {
         Debug.Log("Doing default");
-        defaultDash?.HandleDash(player, dashDirdirection);
+        defaultDash?.HandleDash(player, dashDirdirection, dashRatio);
     }
 
 

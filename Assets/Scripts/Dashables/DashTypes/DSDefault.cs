@@ -15,10 +15,10 @@ public class DSDefault : IDashable
         dashSpeed = 85;
     }
 
-    public void HandleDash(Transform player, Vector2 dashDirection)
+    public void HandleDash(Transform player, Vector2 dashDirection, float dashRatio)
     {
        
-        player.GetComponent<Rigidbody2D>().velocity = dashDirection * dashSpeed;
+        player.GetComponent<Rigidbody2D>().velocity = dashDirection * (dashSpeed * dashRatio);
         Debug.Log("x vel from dash is: " + player.GetComponent<Rigidbody2D>().velocity.x);
     }
 

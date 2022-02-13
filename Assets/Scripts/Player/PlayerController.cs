@@ -62,6 +62,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Chain hook;
     [SerializeField] private Dashable dashStrat;
     [SerializeField] private bool canDash = true;
+    [SerializeField] private float minimumHookDistance = 0.11f;
+    private float distanceFromTargetOnDash;
+    [SerializeField] private float dashRatio;
    
     private bool isHookCaught = false;
     private Vector2 dashDirection;
@@ -194,6 +197,8 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator WaitTillHook()
     {
+        rb.gravityScale = 0f;
+        rb.velocity = Vector2.zero;
         hook.GetComponent<SpriteRenderer>().enabled = true;
         if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) {
             isRight = true;
@@ -204,12 +209,29 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        rb.gravityScale = 0f;
-        rb.velocity = Vector2.zero;
+    
+       
 
         yield return StartCoroutine(hook.ShootHookTo(target));
+        distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
+        dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), 0.7f);
+        Debug.Log("From max distance: " + dashRatio);
+        CheckMinimumHookDistance();
         rb.velocity = Vector2.zero;
         hook.canHit = true;
+    }
+
+    private void CheckMinimumHookDistance()
+    {
+        if (target == null) return;
+        Debug.Log("DIstance to player:  " + distanceFromTargetOnDash);
+        if(distanceFromTargetOnDash < minimumHookDistance * minimumHookDistance)
+        {
+            dashStrat.TryDash(this.transform, dashDirection, dashRatio);
+            GrabHook();
+            
+
+        }
     }
 
     public void Dash()
@@ -232,9 +254,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
   
-        dashStrat.TryDefaultDash(this.transform, dashDirection);
-        
-
+        dashStrat.TryDefaultDash(this.transform, dashDirection, dashRatio);
 
         yield return new WaitForSeconds(dashTime);
         // playerAnimation.DashAnim(rb.velocity);
@@ -301,7 +321,6 @@ public class PlayerController : MonoBehaviour
                 rightVelocity += horizontalFloat * airAccelRatePerSec * Time.deltaTime;
                 rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
 
-                
             }
             else
             {
@@ -376,8 +395,6 @@ public class PlayerController : MonoBehaviour
 
             if (rb.velocity.y < 0) ChangeState(State.FALLING);
 
-            
-            
         }                   
         else if (isGrounded)
         {
@@ -442,7 +459,7 @@ public class PlayerController : MonoBehaviour
             if(playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
             {
                 
-                dashStrat.TryDash(this.transform, dashDirection);
+                dashStrat.TryDash(this.transform, dashDirection, dashRatio);
                 GrabHook();
             }
             
@@ -455,7 +472,7 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-    private void OnTriggerStay2D(Collider2D collision)
+/*    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
@@ -470,7 +487,7 @@ public class PlayerController : MonoBehaviour
             GrabHook();
         }
     }
-
+*/
     private void DrawnAngle(Transform target, Vector2 dir)
     {
 
