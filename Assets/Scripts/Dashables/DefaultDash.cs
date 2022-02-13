@@ -6,7 +6,7 @@ public class DefaultDash : Dashable
 {
     // Start is called before the first frame update
 
-    [SerializeField] float dashSpeed = 85f;
+    [SerializeField] float dashSpeed = 100f;
 
     private void Awake()
     {

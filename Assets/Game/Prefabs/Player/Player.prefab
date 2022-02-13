@@ -254,7 +254,7 @@ Rigidbody2D:
   m_LinearDrag: 1
   m_AngularDrag: 1
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7704dae39405409499615fb71635b5f7, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -310,13 +310,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerState: 0
-  moveSpeed: 15
-  airMoveSpeed: 12
-  fallMultiplier: 2.5
+  maxSpeed: 13
+  zeroToMaxTime: 0.15
+  decelerationRate: 125
+  airZeroToMaxTime: 0.125
+  airDecelerationRate: 200
+  fallMultiplier: 8
   lowFallMultiplier: 2
   airLerp: 5
+  maximumFallSpeed: -35
   isGrounded: 0
-  checkGroundDistance: 0.86
+  checkGroundDistance: 0.25
   groundCheckTransform: {fileID: 1150302621014761068}
   whatIsGround:
     serializedVersion: 2
@@ -327,12 +331,19 @@ MonoBehaviour:
     m_Bits: 64
   target: {fileID: 0}
   dashSpeed: 85
-  dashTime: 0.3
+  dashTime: 0.25
   dashStopTime: 0.03
   hook: {fileID: 2448466951937124746}
   dashStrat: {fileID: 0}
   canDash: 1
+  minimumHookDistance: 1
+  dashRatio: 0
   jumpForce: 25
+  isJumping: 0
+  coyoteTime: 0.2
+  coyeteTimeCounter: 0
+  jumpBufferLength: 0.1
+  jumpBufferCounter: 0
 --- !u!114 &5729395934950749669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,7 +351,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3468933130250358095}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5633e35fd39f515429b01856c73c1c35, type: 3}
   m_Name: 
@@ -504,7 +515,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1939277901, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: delta
-      value: 50
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1939277901, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
+      propertyPath: distanceToHit
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 55314462260441024, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: m_RootOrder
@@ -516,15 +531,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 55314462260441024, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.38
+      value: -0.67
       objectReference: {fileID: 0}
     - target: {fileID: 55314462260441024, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.26
+      value: -3.46
       objectReference: {fileID: 0}
     - target: {fileID: 55314462260441024, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 55314462260441024, guid: 44381a6c2365b0c40a979e38212d4557, type: 3}
       propertyPath: m_LocalRotation.w

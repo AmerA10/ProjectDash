@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7385278967333048614}
   - component: {fileID: 6909783995429040011}
   m_Layer: 6
-  m_Name: Latern
+  m_Name: DefaultNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af6ebbc459efe6646bfcf50bcea7e7e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSpeed: 85
+  dashSpeed: 100
 --- !u!58 &6909783995429040011
 CircleCollider2D:
   m_ObjectHideFlags: 0
