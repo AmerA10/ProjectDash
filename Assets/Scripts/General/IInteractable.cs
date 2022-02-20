@@ -7,6 +7,5 @@ public interface IInteractable
     void HandleInteraction();
     bool IsInteractable();
 
-/*    void HandleReset();
-    bool CanReset();*/
+
 }

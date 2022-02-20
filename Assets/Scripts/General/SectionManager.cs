@@ -8,7 +8,7 @@ public class SectionManager : MonoBehaviour
     [SerializeField] private Exit[] exits;
     [SerializeField] private Vector2 xCamClamp;
     [SerializeField] private Vector2 yCamClamp;
-    [SerializeField] private IInteractable[] interactables;
+    [SerializeField] private IReset[] resettables;
     [SerializeField] private Transform spawnLocation;
 
     /// <summary>
@@ -25,7 +25,7 @@ public class SectionManager : MonoBehaviour
             exit.SetSection(this);
         }
 
-        interactables = GetComponentsInChildren<IInteractable>();
+        resettables = GetComponentsInChildren<IReset>();
     }
     public void TeleportPlayer(Exit destination) {
         Debug.Log("Teleporting to : " + destination);
@@ -33,13 +33,13 @@ public class SectionManager : MonoBehaviour
         OnSectionTeleport(destination, destination.GetSection());
     }
 
-/*    public void ResetIInteractables()
+   public void ResetIInteractables()
     {
-        foreach (IInteractable inter in interactables)
+        foreach (IReset reset in resettables)
         {
-            if(inter.CanReset()) inter.HandleReset();
+            if(reset.isResettable()) reset.HandleReset();
         }
-    }*/
+    }
 
     public Transform GetSpawnLocation()
     {

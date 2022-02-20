@@ -29,7 +29,7 @@ public class LevelManager : MonoBehaviour
 
     private void SetUpPlayer()
     {
-/*        player.OnDeath += currentSection.ResetIInteractables;*/
+        player.OnDeath += currentSection.ResetIInteractables;
         player.transform.position = currentSection.GetSpawnLocation().position;
     }
 
@@ -69,10 +69,11 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Waited");
         player.transform.position = destination.transform.position;
         GetComponent<DeathManager>().SetSpawnLocation(destination.transform);
-/*        player.OnDeath -= currentSection.ResetIInteractables;*/
+        player.OnDeath -= currentSection.ResetIInteractables;
         currentSection.OnSectionTeleport -= TransitionToNextSection;
         currentSection = section;
-/*        player.OnDeath += currentSection.ResetIInteractables;*/
+        player.OnDeath += currentSection.ResetIInteractables;
+        currentSection.ResetIInteractables();
         currentSection.OnSectionTeleport += TransitionToNextSection;
         SetCameraClamps();
         yield return fader.FadeIn(fadeInTime);
