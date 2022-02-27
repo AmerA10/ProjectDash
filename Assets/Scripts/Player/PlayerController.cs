@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private State playerState;
     private PlayerAnimation playerAnimation;
     private PlayerInput playerInput;
+    private SFXManager sfxManager;
 
     public Action OnDeath;
 
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How quickly the player decelerates in the air, the higher the number, the more quickly the player stops moving in the air")]
     [SerializeField] private float airDecelerationRate = 5f;
     private float airAccelRatePerSec;
-    
+
 
     [Header("Falling")]
     [SerializeField] private float fallMultiplier = 2.5f;
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsGround;
 
 
-    [Header("Dash Stuff")]    
+    [Header("Dash Stuff")]
     [SerializeField] private float dashRadius = 5f;
     [SerializeField] LayerMask whatIsDashable;
     [SerializeField] private Transform target;
@@ -66,7 +67,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float minDashRation = 0.8f;
     private float distanceFromTargetOnDash;
     private float dashRatio;
-   
+
     private bool isHookCaught = false;
     private Vector2 dashDirection;
 
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerInput = GetComponent<PlayerInput>();
+        sfxManager = GetComponent<SFXManager>();
 
         minimFallingSpeedVector = new Vector2(rb.velocity.x, maximumFallSpeed);
         ChangeState(State.IDLE_RIGHT);
@@ -100,19 +102,20 @@ public class PlayerController : MonoBehaviour
         accelRatePerSec = maxSpeed / zeroToMaxTime;
         airAccelRatePerSec = maxSpeed / airZeroToMaxTime;
         rightVelocity = 0f;
+
     }
 
     void Update()
     {
         jumpBufferCounter = Mathf.Max(jumpBufferCounter - Time.deltaTime, -1f);
         CheckForGround();
-        if(!isGrounded)
+        if (!isGrounded)
         {
             coyeteTimeCounter = Mathf.Max(coyeteTimeCounter - Time.deltaTime, -1f);
         }
 
-        if((playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
-        target = CheckForDashTarget();
+        if ((playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
+            target = CheckForDashTarget();
         if (target != null && (playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT))
         {
 
@@ -129,7 +132,7 @@ public class PlayerController : MonoBehaviour
             dashStrat = target.GetComponent<Dashable>();
             dashDirection = GetDashDirection(target);
             TimeAction?.Invoke(true);
-          
+
         }
 
         if (Input.GetKeyDown(KeyCode.P)) Die();
@@ -141,7 +144,7 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
-        if(playerState == State.FALLING)
+        if (playerState == State.FALLING)
         {
             rb.velocity = Vector2.Max(rb.velocity, minimFallingSpeedVector);
         }
@@ -150,8 +153,8 @@ public class PlayerController : MonoBehaviour
     private void AdjustPlayerState()
     {
         if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT) return;
-        
-        if (isGrounded &&  playerState != State.JUMPING)
+
+        if (isGrounded && playerState != State.JUMPING)
         {
             float inputDir = playerInput.GetPlayerInputDirection();
             if (inputDir > 0 && playerState != State.WALK_RIGHT) ChangeState(State.WALK_RIGHT);
@@ -160,36 +163,36 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerState == State.WALK_RIGHT) { ChangeState(State.IDLE_RIGHT); }
                 else if (playerState == State.WALK_LEFT) { ChangeState(State.IDLE_LEFT); }
-               // else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
+                // else if (playerState == State.FALLING || playerState == State.JUMPING) { ChangeState(State.IDLE_RIGHT); }
             }
         }
-        if(playerState == State.JUMPING)
+        if (playerState == State.JUMPING)
         {
-            if(rb.velocity.y <= 0)
+            if (rb.velocity.y <= 0)
             {
                 ChangeState(State.FALLING);
-          
+
             }
-        }   
+        }
     }
 
     public void AttemptJumpOrDash()
-    { 
+    {
         if (target == null && playerState == State.FALLING)
         {
-       
+
             jumpBufferCounter = jumpBufferLength;
-            
+
         }
 
         if ((target == null && isGrounded) || (target == null && coyeteTimeCounter > 0f && jumpBufferCounter > 0))
         {
-         
+
             Jump();
         }
-        else if(canDash)
+        else if (canDash)
         {
-            
+
             GrabHook();
             StartCoroutine(WaitTillHook());
         }
@@ -202,29 +205,32 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
 
         hook.GetComponent<SpriteRenderer>().enabled = true;
-        if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT) {
+        if (target.position.x > transform.position.x && playerState != State.SHOOT_RIGHT)
+        {
             isRight = true;
-            ChangeState(State.SHOOT_RIGHT); }
-        else if (playerState != State.SHOOT_LEFT) {
+            ChangeState(State.SHOOT_RIGHT);
+        }
+        else if (playerState != State.SHOOT_LEFT)
+        {
             isRight = false;
-            ChangeState(State.SHOOT_LEFT); 
+            ChangeState(State.SHOOT_LEFT);
         }
 
         yield return StartCoroutine(hook.ShootHookTo(target));
         distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
         Debug.Log("Dsitance from Target Dash" + distanceFromTargetOnDash + " Minumum Hook Distance squared" + (minimumHookDistance * minimumHookDistance));
         dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), minDashRation);
-   
+
         CheckMinimumHookDistance();
- 
+
         hook.canHit = true;
     }
 
     private void CheckMinimumHookDistance()
     {
         if (target == null) return;
- 
-        if(distanceFromTargetOnDash < minimumHookDistance * minimumHookDistance)
+
+        if (distanceFromTargetOnDash < minimumHookDistance * minimumHookDistance)
         {
             GrabHook();
             dashStrat.TryDash(this.transform, dashDirection, dashRatio);
@@ -234,8 +240,8 @@ public class PlayerController : MonoBehaviour
 
     public void Dash()
     {
- 
- 
+
+
         TimeAction?.Invoke(false);
         //TurnTime(false);
         rb.gravityScale = 0f;
@@ -247,11 +253,11 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator StartDashing()
     {
-       
+
         canDash = false;
         rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(dashStopTime);
-  
+
         dashStrat.TryDefaultDash(this.transform, dashDirection, dashRatio);
 
         yield return new WaitForSeconds(dashTime);
@@ -264,12 +270,12 @@ public class PlayerController : MonoBehaviour
     {
         rightVelocity = rb.velocity.x;
         if (rb.velocity.y > 0f) ChangeState(State.JUMPING);
-       else ChangeState(State.FALLING);
-        
+        else ChangeState(State.FALLING);
+
         rb.drag = 1f;
         rb.gravityScale = 1f;
         playerAnimation.EndDashAnim();
-        
+
     }
 
     public void GrabHook()
@@ -286,25 +292,25 @@ public class PlayerController : MonoBehaviour
     #region Movement
     public void HandleMovementInput(float horizontalFloat)
     {
-    
-        isRight = horizontalFloat > 0 ? true : horizontalFloat < 0 ? false : horizontalFloat == 0? isRight: isRight;
+
+        isRight = horizontalFloat > 0 ? true : horizontalFloat < 0 ? false : horizontalFloat == 0 ? isRight : isRight;
         if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
         if (isGrounded)
         {
-            if(horizontalFloat != 0)
+            if (horizontalFloat != 0)
             {
                 // transform.Translate(Vector2.right * horizontalFloat * airMoveSpeed * Time.fixedDeltaTime, Space.Self);
                 rightVelocity += horizontalFloat * accelRatePerSec * Time.deltaTime;
                 rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
-               
+
                 //rb.velocity = new Vector2(horizontalFloat * moveSpeed, rb.velocity.y);
             }
             else
             {
-                rightVelocity -= (isRight ? decelerationRate : -decelerationRate ) * Time.deltaTime;
+                rightVelocity -= (isRight ? decelerationRate : -decelerationRate) * Time.deltaTime;
                 rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
-               
-               
+
+
             }
             rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
         }
@@ -315,18 +321,18 @@ public class PlayerController : MonoBehaviour
 
             if (horizontalFloat != 0)
             {
-                
+
                 rightVelocity += horizontalFloat * airAccelRatePerSec * Time.deltaTime;
                 rightVelocity = (horizontalFloat < 0) ? Mathf.Max(-maxSpeed, rightVelocity) : Mathf.Min(maxSpeed, rightVelocity);
 
             }
             else
             {
-                rightVelocity -= (isRight ? airDecelerationRate : -airDecelerationRate) * Time.deltaTime;     
+                rightVelocity -= (isRight ? airDecelerationRate : -airDecelerationRate) * Time.deltaTime;
                 rightVelocity = (isRight ? Mathf.Max(0f, rightVelocity) : Mathf.Min(0f, rightVelocity));
-              
+
             }
-        
+
             rb.velocity = new Vector2(rightVelocity, rb.velocity.y);
 
             if (rb.velocity.y <= 0)
@@ -335,7 +341,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (rb.velocity.y > 0 && !isHoldingJump)
             {
-               
+
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (lowFallMultiplier - 1) * Time.deltaTime;
             }
         }
@@ -357,7 +363,7 @@ public class PlayerController : MonoBehaviour
 
     public void Fall()
     {
-        if(playerState == State.JUMPING || playerState == State.FALLING)
+        if (playerState == State.JUMPING || playerState == State.FALLING)
         {
             //Do the fall stuff here
             coyeteTimeCounter = 0f;
@@ -366,7 +372,7 @@ public class PlayerController : MonoBehaviour
     }
     public void SetIsHoldingJump(bool isHoldingJump)
     {
-        this.isHoldingJump = isHoldingJump; 
+        this.isHoldingJump = isHoldingJump;
     }
     #endregion
     public bool GetIsGrounded() { return isGrounded; }
@@ -383,17 +389,17 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForGround()
     {
-      // isGrounded = Physics2D.Raycast(groundCheckTransform.position, Vector2.down, checkGroundDistance, whatIsGround);
+        // isGrounded = Physics2D.Raycast(groundCheckTransform.position, Vector2.down, checkGroundDistance, whatIsGround);
         isGrounded = Physics2D.OverlapCircle(groundCheckTransform.position, checkGroundDistance, whatIsGround);
         Debug.DrawRay(this.transform.position, Vector2.down * checkGroundDistance, Color.yellow);
         if (!isGrounded && playerState != State.SHOOT_LEFT && playerState != State.SHOOT_RIGHT)
         {
-           
+
             if (playerState == State.JUMPING) return;
 
             if (rb.velocity.y < 0) ChangeState(State.FALLING);
 
-        }                   
+        }
         else if (isGrounded)
         {
             if (playerState == State.FALLING)
@@ -411,12 +417,12 @@ public class PlayerController : MonoBehaviour
 
         if (colliders.Length == 1)
         {
-           
-                return colliders[0].transform;
+
+            return colliders[0].transform;
         }
         else if (colliders.Length > 1)
         {
-            
+
             return FindClosestTarget(colliders);
         }
         else
@@ -434,10 +440,10 @@ public class PlayerController : MonoBehaviour
         Transform closest = targets[0].transform;
         foreach (RaycastHit2D hit in targets)
         {
-            
+
             if ((hit.transform.position - this.transform.position).x >= 0 && isRight)
             {
-                if((closest.position - this.transform.position).x >= 0)
+                if ((closest.position - this.transform.position).x >= 0)
                 {
                     if ((hit.transform.position - this.transform.position).sqrMagnitude < (closest.transform.position - this.transform.position).sqrMagnitude)
                     {
@@ -448,7 +454,7 @@ public class PlayerController : MonoBehaviour
                 {
                     closest = hit.transform;
                 }
-                
+
             }
             if ((hit.transform.position - this.transform.position).x < 0 && !isRight)
             {
@@ -472,8 +478,9 @@ public class PlayerController : MonoBehaviour
     }
     private void ChangeState(State state)
     {
-        
+
         if (playerState == state) return;
+        sfxManager.PlayClip(playerState, state);
         playerState = state;
         playerAnimation.SetPlayerAnimation(state);
 
@@ -483,13 +490,13 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.GetComponent<Dashable>() && target == collision.GetComponent<Transform>())
         {
-            if(playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
+            if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT)
             {
                 GrabHook();
                 dashStrat.TryDash(this.transform, dashDirection, dashRatio);
-                
+
             }
-            
+
 
         }
         if (collision.tag.Equals("DeathZone"))
@@ -515,7 +522,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.color = Color.yellow;
         Gizmos.color = Color.cyan;
-        if(target != null)
-        Gizmos.DrawLine(this.transform.position, target.transform.position);
+        if (target != null)
+            Gizmos.DrawLine(this.transform.position, target.transform.position);
     }
 }
