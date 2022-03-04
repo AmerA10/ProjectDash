@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float minDashRation = 0.8f;
     private float distanceFromTargetOnDash;
     private float dashRatio;
-
+    
     private bool isHookCaught = false;
     private Vector2 dashDirection;
 
@@ -198,7 +198,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public IEnumerator WaitTillHook()
     {
         rb.gravityScale = 0f;
@@ -220,7 +219,7 @@ public class PlayerController : MonoBehaviour
         distanceFromTargetOnDash = (target.position - this.transform.position).sqrMagnitude;
         Debug.Log("Dsitance from Target Dash" + distanceFromTargetOnDash + " Minumum Hook Distance squared" + (minimumHookDistance * minimumHookDistance));
         dashRatio = Mathf.Max(Mathf.Min((distanceFromTargetOnDash / (dashRadius * dashRadius)), 1f), minDashRation);
-
+        EventManager.Instance.TriggerCameraEffect(CameraEffect.PRE_DASH);
         CheckMinimumHookDistance();
 
         hook.canHit = true;
@@ -234,13 +233,11 @@ public class PlayerController : MonoBehaviour
         {
             GrabHook();
             dashStrat.TryDash(this.transform, dashDirection, dashRatio);
-
         }
     }
 
     public void Dash()
     {
-
 
         TimeAction?.Invoke(false);
         //TurnTime(false);

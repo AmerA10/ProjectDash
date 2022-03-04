@@ -15,16 +15,20 @@ public class EventManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) {
-            Instance = this;
-            return;
+        if (Instance != null) {
+            Destroy(this.gameObject);
         }
-        Destroy(this.gameObject);
+        else
+        {
+            Instance = this;
+        }
+        Debug.Log("INSTANCE: " + Instance);
     }
 
 
     public void TriggerCameraEffect(CameraEffect effect)
     {
+        
         switch (effect)
         {
             case CameraEffect.PRE_DASH:
