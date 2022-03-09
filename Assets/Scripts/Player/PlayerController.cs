@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Falling")]
+    [Tooltip("How quickly the player falls when the player y velocity is less than zero")]
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowFallMultiplier = 2f;
     [SerializeField] private float airLerp = 5f;
@@ -90,6 +91,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 200;
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<PlayerAnimation>();
         playerInput = GetComponent<PlayerInput>();
@@ -502,6 +504,11 @@ public class PlayerController : MonoBehaviour
             Die();
 
         }
+    }
+
+    public Transform GetTarget()
+    {
+        return target;
     }
     private void DrawnAngle(Transform target, Vector2 dir)
     {
