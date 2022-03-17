@@ -8,6 +8,7 @@ public class BatHazard : MonoBehaviour, IHazard, IReset
     [SerializeField] float knockbackForce = 10f;
     [SerializeField] float flyingSpeed = 10f;
     [SerializeField] bool isRight = false;
+    [SerializeField] float stunDuration = .5f;
     Vector3 startingLocation;
     bool isFlying = false;
     Rigidbody2D rb;
@@ -54,7 +55,7 @@ public class BatHazard : MonoBehaviour, IHazard, IReset
         Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
         playerRb.velocity = Vector2.zero;
 
-        StartCoroutine(player.GetComponent<PlayerController>().Stun(0.25f));
+        StartCoroutine(player.GetComponent<PlayerController>().Stun(stunDuration));
         
         Debug.Log("Applying knockback of" + knockbackForce * dir);
 
