@@ -37,7 +37,7 @@ public class BatHazard : MonoBehaviour, IHazard, IReset
         if(isFlying)
         {
             Debug.Log("Bat flying at speed of: " + flyingSpeed * dir);
-            rb.velocity = new Vector2(flyingSpeed * dir, 5f * Mathf.Sin(Time.time * 5f));
+            rb.velocity = new Vector2(flyingSpeed * dir, 2f * Mathf.Sin(Time.time * 5f));
         }
     }
 
@@ -52,11 +52,16 @@ public class BatHazard : MonoBehaviour, IHazard, IReset
 
     private void Knockback(Transform player) {
         Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-        Debug.Log("Applying knockback of" + knockbackForce * dir);
         playerRb.velocity = Vector2.zero;
-        player.position = new Vector3(player.position.x + (knockbackForce * dir), player.position.y, player.position.z);
-        GetComponent<CircleCollider2D>().enabled = false;
 
+        StartCoroutine(player.GetComponent<PlayerController>().Stun(0.25f));
+        
+        Debug.Log("Applying knockback of" + knockbackForce * dir);
+
+        playerRb.AddForce(knockbackForce * dir * Vector2.right, ForceMode2D.Impulse);
+        GetComponent<CircleCollider2D>().enabled = false;
+        Debug.Log("Stunned Player");
+        
     
     }
 

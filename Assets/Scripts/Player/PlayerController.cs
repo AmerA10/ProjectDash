@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
     private void AdjustPlayerState()
     {
-        if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT) return;
+        if (playerState == State.SHOOT_LEFT || playerState == State.SHOOT_RIGHT || playerState == State.STUNNED) return;
 
         if (isGrounded && playerState != State.JUMPING)
         {
@@ -293,7 +293,7 @@ public class PlayerController : MonoBehaviour
     {
 
         isRight = horizontalFloat > 0 ? true : horizontalFloat < 0 ? false : horizontalFloat == 0 ? isRight : isRight;
-        if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT) return;
+        if (playerState == State.SHOOT_RIGHT || playerState == State.SHOOT_LEFT || playerState == State.STUNNED) return;
         if (isGrounded)
         {
             if (horizontalFloat != 0)
@@ -360,6 +360,21 @@ public class PlayerController : MonoBehaviour
         ChangeState(State.JUMPING);
     }
 
+    public IEnumerator Stun(float duration)
+    {
+        State previousState = this.playerState;
+        rb.velocity = Vector2.zero;
+        this.ChangeState(State.STUNNED);
+        yield return StartCoroutine(StunPlayerForDuration(duration));
+        Debug.Log("done waiting");
+        this.ChangeState(previousState);
+    }
+    private IEnumerator StunPlayerForDuration(float duration)
+    {
+        Debug.Log("WAITING");
+        yield return new WaitForSeconds(duration);
+    }
+
     public void Fall()
     {
         if (playerState == State.JUMPING || playerState == State.FALLING)
@@ -372,6 +387,10 @@ public class PlayerController : MonoBehaviour
     public void SetIsHoldingJump(bool isHoldingJump)
     {
         this.isHoldingJump = isHoldingJump;
+    }
+    public Transform GetTarget()
+    {
+        return target;
     }
     #endregion
     public bool GetIsGrounded() { return isGrounded; }
@@ -506,10 +525,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public Transform GetTarget()
-    {
-        return target;
-    }
+
     private void DrawnAngle(Transform target, Vector2 dir)
     {
 

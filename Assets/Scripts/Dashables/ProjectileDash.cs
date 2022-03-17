@@ -30,6 +30,11 @@ public class ProjectileDash : Dashable
         this.transform.tag = defaultTag;
     }
 
+    public void SetSpeed(float speed)
+    {
+        this.speed = speed;
+
+    }
     
 
     void Start()
